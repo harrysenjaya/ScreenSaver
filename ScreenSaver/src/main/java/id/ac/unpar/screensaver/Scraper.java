@@ -29,13 +29,13 @@ public class Scraper {
     private final String LOGOUT_URL = BASE_URL + "logout";
     private final String HOME_URL = BASE_URL + "home";
 
-    private Properties credentials;
-    private String npm;
-    private String password;
+    private final Properties credentials;
+    private final String npm;
+    private final String password;
     
     public Scraper() throws FileNotFoundException, IOException {
         this.credentials = new Properties();
-        credentials.load(new FileReader("login.properties"));
+        this.credentials.load(new FileReader("login.properties"));
         this.npm = credentials.getProperty("user.email");
         this.password = credentials.getProperty("user.password");
     }
@@ -71,10 +71,10 @@ public class Scraper {
         loginConn.method(Connection.Method.POST);
         resp = loginConn.execute();
         if (resp.body().contains(user)) {
-                Map<String, String> sessionId = resp.cookies();
-                return sessionId.get("ci_session");
+            Map<String, String> sessionId = resp.cookies();
+            return sessionId.get("ci_session");
         } else {
-                return null;
+            return null;
         }
     }
 }

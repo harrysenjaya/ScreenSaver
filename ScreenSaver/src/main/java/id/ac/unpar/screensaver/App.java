@@ -1,7 +1,5 @@
 package id.ac.unpar.screensaver;
 
-import id.ac.unpar.siamodels.Mahasiswa;
-import java.io.FileReader;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
