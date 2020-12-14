@@ -24,7 +24,7 @@
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.4</version>
+                <version>0.0.5</version>
                 <configuration>
                     <mainClass>id.ac.unpar.screensaver.App</mainClass>
                 </configuration>
@@ -80,12 +80,12 @@
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-controls</artifactId>
-                    <version>11</version>
+                    <version>15.0.1</version>
                 </dependency>
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-fxml</artifactId>
-                    <version>11</version>
+                    <version>15.0.1</version>
                 </dependency>
             </dependencies>
         </profile>
@@ -96,6 +96,11 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.13.1</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>SIAModels</artifactId>
+            <version>4.0.0</version>
         </dependency>
     </dependencies>
 </project>

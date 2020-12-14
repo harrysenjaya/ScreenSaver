@@ -49,8 +49,8 @@ public class Scraper {
     
     public String login() throws IOException {
         init();
-        Mahasiswa mahasiswa = new Mahasiswa(this.npm);
-        String user = mahasiswa.getEmailAddress();
+//        Mahasiswa mahasiswa = new Mahasiswa(this.npm);
+        String user = "2017730067@student.unpar.ac.id";
         Connection conn = Jsoup.connect(LOGIN_URL);
         conn.data("Submit", "Login");
         conn.timeout(0);
