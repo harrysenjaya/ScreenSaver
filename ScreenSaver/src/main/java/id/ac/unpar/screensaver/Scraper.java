@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package id.ac.unpar.screensaver;
 
 import id.ac.unpar.siamodels.Mahasiswa;
@@ -49,8 +44,8 @@ public class Scraper {
     
     public String login() throws IOException {
         init();
-//        Mahasiswa mahasiswa = new Mahasiswa(this.npm);
-        String user = "2017730067@student.unpar.ac.id";
+        Mahasiswa mahasiswa = new Mahasiswa(this.npm);
+        String user = mahasiswa.getEmailAddress();
         Connection conn = Jsoup.connect(LOGIN_URL);
         conn.data("Submit", "Login");
         conn.timeout(0);
@@ -75,6 +70,41 @@ public class Scraper {
             return sessionId.get("ci_session");
         } else {
             return null;
+        }
+    }
+    
+    public String login_IFStupor() throws IOException{
+        init();
+        Mahasiswa logged_mhs = new Mahasiswa(npm);
+        String user = logged_mhs.getEmailAddress();
+        Connection conn = Jsoup.connect(LOGIN_URL);
+        conn.data("Submit", "Login");
+        conn.timeout(0);
+    //		conn.validateTLSCertificates(false);
+        conn.method(Connection.Method.POST);
+        Connection.Response resp = conn.execute();
+        Document doc = resp.parse();
+        String lt = doc.select("input[name=lt]").val();
+        String execution = doc.select("input[name=execution]").val();
+        String jsessionid = resp.cookie("JSESSIONID");
+        /* SSO LOGIN */
+        Connection loginConn = Jsoup.connect(SSO_URL + ";jsessionid=" + jsessionid + "?service=" + LOGIN_URL);
+        loginConn.cookies(resp.cookies());
+        loginConn.data("username", npm);
+        loginConn.data("password", password);
+        loginConn.data("lt", lt);
+        loginConn.data("execution", execution);
+        loginConn.data("_eventId", "submit");
+        loginConn.data("submit", "");
+        loginConn.timeout(0);
+    //		loginConn.validateTLSCertificates(false);
+        loginConn.method(Connection.Method.POST);
+        resp = loginConn.execute();
+        if (resp.body().contains(user)) {
+                Map<String, String> phpsessid = resp.cookies();
+                return phpsessid.get("ci_session");
+        } else {
+                return null;
         }
     }
 }

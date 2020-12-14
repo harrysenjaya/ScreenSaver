@@ -9,7 +9,7 @@ public class PrimaryController {
     
     public PrimaryController() throws IOException {
         this.scraper = new Scraper();
-        this.session = this.scraper.login();         
+        this.session = this.scraper.login_IFStupor();         
         System.out.println(this.session);
 
     }
