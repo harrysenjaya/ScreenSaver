@@ -1,27 +1,47 @@
 package id.ac.unpar.screensaver;
 
+import id.ac.unpar.siamodels.Mahasiswa;
+import id.ac.unpar.siamodels.TahunSemester;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.text.Text;
 
-public class PrimaryController {
+public class PrimaryController implements Initializable{
     private Scraper scraper;
     private String session;
     
-    public PrimaryController() throws IOException {
-        this.scraper = new Scraper();
-        this.session = this.scraper.login_IFStupor();         
-        System.out.println(this.session);
-
-    }
-
-    
+    private Mahasiswa mahasiswa;
+    private TahunSemester tahunSemester;
     
     @FXML
-    private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
+    private Text nama, email, tahun, semester;
+
+    public PrimaryController() throws IOException {
+
     }
-    
-    public void login(){
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        try {
+            this.scraper = new Scraper();
+            this.session = this.scraper.login();   
+            this.scraper.requestNamePhotoTahunSemester(this.session);
+        } catch (IOException ex) {
+            Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
+        this.mahasiswa=this.scraper.getMahasiswa();
+        this.tahunSemester = this.scraper.getTahunSemester();
+        this.nama.setText(this.mahasiswa.getNama());
+        this.email.setText(this.mahasiswa.getEmailAddress());
+        this.tahun.setText(this.tahunSemester.getTahun()+"");
+        this.semester.setText(this.tahunSemester.getSemester().toString());    
     }
+
+
 }
