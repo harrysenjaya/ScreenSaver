@@ -50,45 +50,14 @@ public class Scraper {
     
     public String login() throws IOException {
         init();
-        this.mahasiswa = new Mahasiswa(this.npm);
-        String user = this.mahasiswa.getEmailAddress();
-        Connection conn = Jsoup.connect(LOGIN_URL);
-        conn.data("Submit", "Login");
-        conn.timeout(0);
-        conn.method(Connection.Method.POST);
-        Connection.Response resp = conn.execute();
-        Document doc = resp.parse();
-        String execution = doc.select("input[name=execution]").val();
-//	String jsessionid = resp.cookie("JSESSIONID");
-
-        /* SSO LOGIN */
-        Connection loginConn = Jsoup.connect(SSO_URL + "?service=" + LOGIN_URL);
-//	loginConn.cookies(resp.cookies());
-        loginConn.data("username", user);
-        loginConn.data("password", this.password);
-        loginConn.data("execution", execution);
-        loginConn.data("_eventId", "submit");
-        loginConn.timeout(0);
-        loginConn.method(Connection.Method.POST);
-        resp = loginConn.execute();
-        if (resp.body().contains(user)) {
-            Map<String, String> sessionId = resp.cookies();
-            return sessionId.get("ci_session");
-        } else {
-            return null;
-        }
-    }
-    
-    public String login_IFStupor() throws IOException{
-        init();
         Mahasiswa logged_mhs = new Mahasiswa(npm);
         String user = logged_mhs.getEmailAddress();
         Connection conn = Jsoup.connect(LOGIN_URL);
         conn.data("Submit", "Login");
         conn.timeout(0);
-    //		conn.validateTLSCertificates(false);
+        conn.validateTLSCertificates(false);
         conn.method(Connection.Method.POST);
-        Connection.Response resp = conn.execute();
+        Response resp = conn.execute();
         Document doc = resp.parse();
         String lt = doc.select("input[name=lt]").val();
         String execution = doc.select("input[name=execution]").val();
@@ -96,14 +65,14 @@ public class Scraper {
         /* SSO LOGIN */
         Connection loginConn = Jsoup.connect(SSO_URL + ";jsessionid=" + jsessionid + "?service=" + LOGIN_URL);
         loginConn.cookies(resp.cookies());
-        loginConn.data("username", npm);
-        loginConn.data("password", password);
+        loginConn.data("username", user);
+        loginConn.data("password", pass);
         loginConn.data("lt", lt);
         loginConn.data("execution", execution);
         loginConn.data("_eventId", "submit");
         loginConn.data("submit", "");
         loginConn.timeout(0);
-    //		loginConn.validateTLSCertificates(false);
+        loginConn.validateTLSCertificates(false);
         loginConn.method(Connection.Method.POST);
         resp = loginConn.execute();
         if (resp.body().contains(user)) {
@@ -113,20 +82,19 @@ public class Scraper {
                 return null;
         }
     }
-    
+
     public void requestNamePhotoTahunSemester(String phpsessid) throws IOException {
         Connection connection = Jsoup.connect(HOME_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
         connection.method(Connection.Method.GET);
         Connection.Response resp = connection.execute();
+        
         Document doc = resp.parse();
         String nama = doc.select("div[class=namaUser d-none d-lg-block mr-3]").text();
-        System.out.println(nama);
         this.mahasiswa.setNama(nama.substring(0, nama.indexOf(this.mahasiswa.getEmailAddress())));
+        
         Element photo = doc.select("img[class=img-fluid fotoProfil]").first();
-        System.out.println("");
-        System.out.println(photo);
         String photoPath = photo.attr("src");
         this.mahasiswa.setPhotoPath(photoPath);		
         connection = Jsoup.connect(NILAI_URL);
