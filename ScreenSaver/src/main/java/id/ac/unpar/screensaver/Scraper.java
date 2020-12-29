@@ -76,10 +76,10 @@ public class Scraper {
         loginConn.method(Connection.Method.POST);
         resp = loginConn.execute();
         if (resp.body().contains(user)) {
-                Map<String, String> phpsessid = resp.cookies();
-                return phpsessid.get("ci_session");
+            Map<String, String> phpsessid = resp.cookies();
+            return phpsessid.get("ci_session");
         } else {
-                return null;
+            return null;
         }
     }
 
