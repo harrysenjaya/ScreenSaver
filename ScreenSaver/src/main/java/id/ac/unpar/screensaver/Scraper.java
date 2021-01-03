@@ -78,30 +78,29 @@ public class Scraper {
     }
 
     public void requestNamePhotoTahunSemester(String phpsessid) throws IOException {
-        Connection connection = Jsoup.connect(HOME_URL);
+       Connection connection = Jsoup.connect(HOME_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
-        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.GET);
-        Response resp = connection.execute();
+        Connection.Response resp = connection.execute();
+        
         Document doc = resp.parse();
         String nama = doc.select("div[class=namaUser d-none d-lg-block mr-3]").text();
-        mhs.setNama(nama.substring(0, nama.indexOf(mhs.getEmailAddress())));
-        Element photo = doc.select("img[class=img-fluid  fotoProfil]").first();
+        this.mahasiswa.setNama(nama.substring(0, nama.indexOf(this.mahasiswa.getEmailAddress())));
+        
+        Element photo = doc.select("img[class=img-fluid fotoProfil]").first();
         String photoPath = photo.attr("src");
-        mhs.setPhotoPath(photoPath);
-        connection = Jsoup.connect(FRSPRS_URL);
+        this.mahasiswa.setPhotoPath(photoPath);		
+        connection = Jsoup.connect(NILAI_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
-        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.GET);
         resp = connection.execute();
-        doc = resp.parse();
-        String curr_sem = doc.select(".custom-selectContent span").text();
-        String[] sem_set = parseSemester(curr_sem);
-        TahunSemester currTahunSemester = new TahunSemester(Integer.parseInt(sem_set[0]),
-                        Semester.fromString(sem_set[1]));
-        return currTahunSemester;
+        doc = resp.parse();		
+        Elements options = doc.getElementsByAttributeValue("name", "dropdownSemester").first().children();   
+        String curr_sem = options.last().val(); 
+        curr_sem = curr_sem.substring(2,4).concat(curr_sem.substring(5));
+        this.tahunSemester = new TahunSemester(curr_sem);
     } 
 
     public Mahasiswa getMahasiswa() {
