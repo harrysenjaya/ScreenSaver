@@ -19,7 +19,7 @@ public class PrimaryController implements Initializable{
     private TahunSemester tahunSemester;
     
     @FXML
-    private Text nama, email, tahun, semester;
+    private Text nama, email, tahun, semester, toefl;
 
     public PrimaryController() throws IOException {
 
@@ -31,6 +31,7 @@ public class PrimaryController implements Initializable{
             this.scraper = new Scraper();
             this.session = this.scraper.login();   
             this.scraper.requestNamePhotoTahunSemester(this.session);
+            this.scraper.requestNilaiTOEFL(this.session);
         } catch (IOException ex) {
             Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -41,6 +42,7 @@ public class PrimaryController implements Initializable{
         this.email.setText(this.mahasiswa.getEmailAddress());
         this.tahun.setText(this.tahunSemester.getTahun()+"");
         this.semester.setText(this.tahunSemester.getSemester().toString());    
+        this.toefl.setText(this.mahasiswa.getNilaiTOEFL().firstKey().toString() + " " + this.mahasiswa.getNilaiTOEFL().get(this.mahasiswa.getNilaiTOEFL().firstKey()).toString());
     }
 
 
