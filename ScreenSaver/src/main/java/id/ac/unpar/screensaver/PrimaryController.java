@@ -33,6 +33,7 @@ public class PrimaryController implements Initializable{
             this.scraper.requestNamePhotoTahunSemester(this.session);
             this.scraper.requestNilaiTOEFL(this.session);
             this.scraper.requestNilai(this.session);
+            this.scraper.requestTanggalLahir(this.session);
         } catch (IOException ex) {
             Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {

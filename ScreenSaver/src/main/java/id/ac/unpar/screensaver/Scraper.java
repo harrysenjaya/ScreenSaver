@@ -34,6 +34,7 @@ public class Scraper {
     private final String TOEFL_URL = BASE_URL + "nilai/toefl";
     private final String LOGOUT_URL = BASE_URL + "logout";
     private final String HOME_URL = BASE_URL + "home";
+    private final String PROFILE_URL = BASE_URL + "profil";
 
     private final Properties credentials;
     private final String npm;
@@ -174,6 +175,22 @@ public class Scraper {
                         return 0;
                 }
         });
+    }
+    
+    public void requestTanggalLahir(String phpsessid) throws IOException{
+        Connection connection = Jsoup.connect(PROFILE_URL);
+        connection.cookie("ci_session", phpsessid);
+        connection.timeout(0);
+        connection.method(Connection.Method.POST);
+        Response resp = connection.execute();
+        Document doc = resp.parse();
+        
+        Element elementTempatTanggalLahir = doc.select("div[class=offset-md-1 col-md-10 col-12 headerWrapper my-0 border-bottom]").first().children().get(1).children().get(1).select("h8").get(1);
+        String tempatTanggalLahir = elementTempatTanggalLahir.text().substring(2);
+        System.out.println(tempatTanggalLahir);
+        LocalDate localDate = LocalDate.parse(tempatTanggalLahir);
+        System.out.println(localDate.toString());
+//        this.mahasiswa.setTanggalLahir(LocalDate.MIN);
     }
     
     public Mahasiswa getMahasiswa() {
