@@ -36,7 +36,7 @@ public class Scraper {
     private final String password;
     
     private Mahasiswa mahasiswa;
-    private TahunSemester tahunSemester;
+    private TahunSemester angkatan;
     
     public Scraper() throws FileNotFoundException, IOException {
         this.credentials = new Properties();
@@ -102,9 +102,9 @@ public class Scraper {
         resp = connection.execute();
         doc = resp.parse();		
         Elements options = doc.getElementsByAttributeValue("name", "dropdownSemester").first().children();   
-        String curr_sem = options.last().val(); 
-        curr_sem = curr_sem.substring(2,4).concat(curr_sem.substring(5));
-        this.tahunSemester = new TahunSemester(curr_sem);
+        String semester = options.first().val(); 
+        semester = semester.substring(2,4).concat(semester.substring(5));
+        this.angkatan = new TahunSemester(semester);
     } 
 
     public void requestNilaiTOEFL(String phpsessid) throws IOException {
@@ -131,12 +131,55 @@ public class Scraper {
         this.mahasiswa.setNilaiTOEFL(nilaiTerakhirTOEFL);
     }
     
+    public void requestNilai(String phpsessid, Mahasiswa logged_mhs) throws IOException, InterruptedException {
+        Connection connection = Jsoup.connect(NILAI_URL);
+        connection.cookie("ci_session", phpsessid);
+        connection.timeout(0);
+        connection.validateTLSCertificates(false);
+        connection.method(Connection.Method.POST);
+        Response resp = connection.execute();
+        Document doc = resp.parse();
+
+        Elements dropdownSemester = doc.select("#dropdownSemester option");
+        ArrayList<String> listSemester = new ArrayList<String>();
+        for (Element semester : dropdownSemester){
+                listSemester.add(semester.attr("value"));
+        }
+
+        Thread[] threadUrl = new Thread[listSemester.size()-1];
+        for(int i = 0; i < listSemester.size()-1; i++){
+                threadUrl[i] = new Thread(new MultipleRequest(i, listSemester, NILAI_URL, phpsessid, logged_mhs));
+                threadUrl[i].start();
+        }
+        for(int i = 0; i < listSemester.size()-1; i++){
+                threadUrl[i].join();
+        }
+        Collections.sort(logged_mhs.getRiwayatNilai(), new Comparator<Nilai>() {
+                @Override
+                public int compare(Nilai o1, Nilai o2) {
+                        if (o1.getTahunAjaran() < o2.getTahunAjaran()) {
+                                return -1;
+                        }
+                        if (o1.getTahunAjaran() > o2.getTahunAjaran()) {
+                                return + 1;
+                        }
+                        if (o1.getSemester().getOrder() < o2.getSemester().getOrder()) {
+                                return -1;
+                        }
+                        if (o1.getSemester().getOrder() > o2.getSemester().getOrder()) {
+                                return +1;
+                        }
+                        return 0;
+                }
+        });
+    }
+    
     public Mahasiswa getMahasiswa() {
         return mahasiswa;
     }
 
-    public TahunSemester getTahunSemester() {
-        return tahunSemester;
+    public TahunSemester getAngkatan() {
+        return angkatan;
     }
     
     

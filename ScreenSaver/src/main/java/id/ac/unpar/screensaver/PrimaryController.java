@@ -16,10 +16,10 @@ public class PrimaryController implements Initializable{
     private String session;
     
     private Mahasiswa mahasiswa;
-    private TahunSemester tahunSemester;
+    private TahunSemester angkatanMahasiswa;
     
     @FXML
-    private Text nama, email, tahun, semester, toefl;
+    private Text nama, email, angkatan, toefl;
 
     public PrimaryController() throws IOException {
 
@@ -32,17 +32,19 @@ public class PrimaryController implements Initializable{
             this.session = this.scraper.login();   
             this.scraper.requestNamePhotoTahunSemester(this.session);
             this.scraper.requestNilaiTOEFL(this.session);
+            this.scraper.requestNilai(this.session);
         } catch (IOException ex) {
+            Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         this.mahasiswa=this.scraper.getMahasiswa();
-        this.tahunSemester = this.scraper.getTahunSemester();
+        this.angkatanMahasiswa = this.scraper.getAngkatan();
         this.nama.setText(this.mahasiswa.getNama());
-        this.email.setText(this.mahasiswa.getEmailAddress());
-        this.tahun.setText(this.tahunSemester.getTahun()+"");
-        this.semester.setText(this.tahunSemester.getSemester().toString());    
-        this.toefl.setText(this.mahasiswa.getNilaiTOEFL().firstKey().toString() + " " + this.mahasiswa.getNilaiTOEFL().get(this.mahasiswa.getNilaiTOEFL().firstKey()).toString());
+        this.email.setText(this.email.getText()+this.mahasiswa.getEmailAddress());
+        this.angkatan.setText(this.angkatan.getText()+this.angkatanMahasiswa.getTahun()+"");
+        this.toefl.setText(this.toefl.getText()+this.mahasiswa.getNilaiTOEFL().firstKey().toString() + " " + this.mahasiswa.getNilaiTOEFL().get(this.mahasiswa.getNilaiTOEFL().firstKey()).toString());
     }
 
 
