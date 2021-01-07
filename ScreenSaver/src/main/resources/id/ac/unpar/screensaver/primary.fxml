@@ -7,30 +7,70 @@
 
 <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="id.ac.unpar.screensaver.PrimaryController">
    <children>
-      <ImageView fx:id="foto" layoutX="14.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true" />
-      <Text fx:id="angkatan" layoutX="214.0" layoutY="127.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mahasiswa angkatan ">
-         <font>
-            <Font size="20.0" />
-         </font></Text>
-      <Text layoutX="214.0" layoutY="202.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" wrappingWidth="67.0">
-         <font>
-            <Font size="20.0" />
-         </font></Text>
-      <Text layoutX="214.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nilai TOEFL" wrappingWidth="110.0">
-         <font>
-            <Font size="20.0" />
-         </font></Text>
+      <ImageView fx:id="foto" layoutX="15.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true" />
       <Text fx:id="nama" layoutX="214.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
          <font>
             <Font size="25.0" />
          </font></Text>
-      <Text fx:id="email" layoutX="330.0" layoutY="202.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+      <Text fx:id="angkatan" layoutX="214.0" layoutY="127.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mahasiswa angkatan ">
          <font>
             <Font size="20.0" />
          </font></Text>
-      <Text fx:id="toefl" layoutX="330.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+      <Text layoutX="214.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Usia" wrappingWidth="67.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fx:id="usia" layoutX="400.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text layoutX="214.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status" wrappingWidth="67.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fx:id="usia1" layoutX="400.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text layoutX="214.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" wrappingWidth="67.0">
          <font>
             <Font size="20.0" />
          </font></Text>
+      <Text fx:id="email" layoutX="400.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+         <font>
+            <Font size="20.0" />
+         </font></Text>
+      <Text layoutX="214.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nilai TOEFL" wrappingWidth="110.0">
+         <font>
+            <Font size="20.0" />
+         </font></Text>
+      <Text fx:id="toefl" layoutX="400.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+         <font>
+            <Font size="20.0" />
+         </font></Text>
+      <Text layoutX="218.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IPS/IPK" wrappingWidth="110.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fx:id="ipk" layoutX="400.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text layoutX="218.0" layoutY="380.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SKS Lulus/Tempuh" wrappingWidth="167.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fx:id="sks" layoutX="400.0" layoutY="380.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
    </children>
 </Pane>

@@ -19,7 +19,7 @@ public class PrimaryController implements Initializable{
     private TahunSemester angkatanMahasiswa;
     
     @FXML
-    private Text nama, email, angkatan, toefl;
+    private Text nama, angkatan, usia, status, email, toefl, ipk, sks;
 
     public PrimaryController() throws IOException {
 
@@ -40,11 +40,13 @@ public class PrimaryController implements Initializable{
         }
         
         this.mahasiswa=this.scraper.getMahasiswa();
-        this.angkatanMahasiswa = this.scraper.getAngkatan();
         this.nama.setText(this.mahasiswa.getNama());
+        this.angkatan.setText(this.angkatan.getText()+this.mahasiswa.getTahunAngkatan());
         this.email.setText(this.email.getText()+this.mahasiswa.getEmailAddress());
-        this.angkatan.setText(this.angkatan.getText()+this.angkatanMahasiswa.getTahun()+"");
-        this.toefl.setText(this.toefl.getText()+this.mahasiswa.getNilaiTOEFL().firstKey().toString() + " " + this.mahasiswa.getNilaiTOEFL().get(this.mahasiswa.getNilaiTOEFL().firstKey()).toString());
+        this.toefl.setText(this.toefl.getText()+this.mahasiswa.getNilaiTOEFL().get(this.mahasiswa.getNilaiTOEFL().firstKey()).toString());
+        this.ipk.setText(this.ipk.getText()+Math.round(this.mahasiswa.calculateIPS() * 100.0) / 100.0+"/"+Math.round(this.mahasiswa.calculateIPKumulatif() * 100.0) / 100.0);
+        this.sks.setText(this.sks.getText()+this.mahasiswa.calculateSKSLulus()+"/"+this.mahasiswa.calculateSKSTempuh(false));
+                
     }
 
 

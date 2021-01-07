@@ -1,11 +1,15 @@
 package id.ac.unpar.screensaver;
 
 import id.ac.unpar.siamodels.Mahasiswa;
+import id.ac.unpar.siamodels.Mahasiswa.Nilai;
 import id.ac.unpar.siamodels.TahunSemester;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SortedMap;
@@ -36,7 +40,6 @@ public class Scraper {
     private final String password;
     
     private Mahasiswa mahasiswa;
-    private TahunSemester angkatan;
     
     public Scraper() throws FileNotFoundException, IOException {
         this.credentials = new Properties();
@@ -95,16 +98,16 @@ public class Scraper {
         Element photo = doc.select("img[class=img-fluid fotoProfil]").first();
         String photoPath = photo.attr("src");
         this.mahasiswa.setPhotoPath(photoPath);		
-        connection = Jsoup.connect(NILAI_URL);
-        connection.cookie("ci_session", phpsessid);
-        connection.timeout(0);
-        connection.method(Connection.Method.GET);
-        resp = connection.execute();
-        doc = resp.parse();		
-        Elements options = doc.getElementsByAttributeValue("name", "dropdownSemester").first().children();   
-        String semester = options.first().val(); 
-        semester = semester.substring(2,4).concat(semester.substring(5));
-        this.angkatan = new TahunSemester(semester);
+//        connection = Jsoup.connect(NILAI_URL);
+//        connection.cookie("ci_session", phpsessid);
+//        connection.timeout(0);
+//        connection.method(Connection.Method.GET);
+//        resp = connection.execute();
+//        doc = resp.parse();		
+//        Elements options = doc.getElementsByAttributeValue("name", "dropdownSemester").first().children();   
+//        String curr_sem = options.last().val(); 				
+//        curr_sem = curr_sem.substring(2,4).concat(curr_sem.substring(5));
+//        TahunSemester currTahunSemester = new TahunSemester(curr_sem);
     } 
 
     public void requestNilaiTOEFL(String phpsessid) throws IOException {
@@ -131,11 +134,10 @@ public class Scraper {
         this.mahasiswa.setNilaiTOEFL(nilaiTerakhirTOEFL);
     }
     
-    public void requestNilai(String phpsessid, Mahasiswa logged_mhs) throws IOException, InterruptedException {
+    public void requestNilai(String phpsessid) throws IOException, InterruptedException {
         Connection connection = Jsoup.connect(NILAI_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
-        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.POST);
         Response resp = connection.execute();
         Document doc = resp.parse();
@@ -143,18 +145,18 @@ public class Scraper {
         Elements dropdownSemester = doc.select("#dropdownSemester option");
         ArrayList<String> listSemester = new ArrayList<String>();
         for (Element semester : dropdownSemester){
-                listSemester.add(semester.attr("value"));
+            listSemester.add(semester.attr("value"));
         }
 
         Thread[] threadUrl = new Thread[listSemester.size()-1];
         for(int i = 0; i < listSemester.size()-1; i++){
-                threadUrl[i] = new Thread(new MultipleRequest(i, listSemester, NILAI_URL, phpsessid, logged_mhs));
+                threadUrl[i] = new Thread(new MultipleRequest(i, listSemester, NILAI_URL, phpsessid, this.mahasiswa));
                 threadUrl[i].start();
         }
         for(int i = 0; i < listSemester.size()-1; i++){
                 threadUrl[i].join();
         }
-        Collections.sort(logged_mhs.getRiwayatNilai(), new Comparator<Nilai>() {
+        Collections.sort(this.mahasiswa.getRiwayatNilai(), new Comparator<Nilai>() {
                 @Override
                 public int compare(Nilai o1, Nilai o2) {
                         if (o1.getTahunAjaran() < o2.getTahunAjaran()) {
@@ -177,10 +179,5 @@ public class Scraper {
     public Mahasiswa getMahasiswa() {
         return mahasiswa;
     }
-
-    public TahunSemester getAngkatan() {
-        return angkatan;
-    }
-    
     
 }
