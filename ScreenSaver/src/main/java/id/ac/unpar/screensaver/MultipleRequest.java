@@ -37,7 +37,7 @@ public class MultipleRequest implements Runnable {
     }
 
     @Override
-    public void run() {
+public void run() {
         try {
             String[] thn_sem = listSemester.get(l).split("-");
             String thn = thn_sem[0];
@@ -45,11 +45,12 @@ public class MultipleRequest implements Runnable {
             Connection connection = Jsoup.connect(NILAI_URL + "/" + thn + "/" + sem);
             connection.cookie("ci_session", phpsessid);
             connection.timeout(0);
+            connection.validateTLSCertificates(false);
             connection.method(Connection.Method.POST);
             Connection.Response resp = connection.execute();
             Document doc = resp.parse();
 
-            Element script = doc.select("script").get(doc.select("script").size()-1);
+            Element script = doc.select("script").get(10);
             String scriptDataMataKuliah = script.html().substring(script.html().indexOf("var data_mata_kuliah = [];"), script.html().indexOf("var data_angket = [];"));
             engine.eval(scriptDataMataKuliah);
             ScriptObjectMirror dataMataKuliah = (ScriptObjectMirror) engine.get("data_mata_kuliah");
