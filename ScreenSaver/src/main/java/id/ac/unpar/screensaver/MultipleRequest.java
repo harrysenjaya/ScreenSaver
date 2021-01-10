@@ -37,7 +37,7 @@ public class MultipleRequest implements Runnable {
     }
 
     @Override
-public void run() {
+    public void run() {
         try {
             String[] thn_sem = listSemester.get(l).split("-");
             String thn = thn_sem[0];
@@ -58,8 +58,7 @@ public void run() {
             for (Map.Entry<String, Object> mataKuliahEntry : dataMataKuliah.entrySet()) {
                 ScriptObjectMirror mataKuliah = (ScriptObjectMirror) mataKuliahEntry.getValue();
                 MataKuliah curr_mk = MataKuliahFactory.getInstance().createMataKuliah((String) mataKuliah.get("kode_mata_kuliah"), Integer.parseInt((String) mataKuliah.get("jumlah_sks")), (String) mataKuliah.get("nama_mata_kuliah"));
-                logged_mhs.getRiwayatNilai()
-                        .add(new Mahasiswa.Nilai(tahunSemesterNilai, curr_mk, (String) mataKuliah.get("na")));
+                logged_mhs.getRiwayatNilai().add(new Mahasiswa.Nilai(tahunSemesterNilai, curr_mk, (String) mataKuliah.get("na")));
             }
         } catch (IOException e){
             e.printStackTrace();
