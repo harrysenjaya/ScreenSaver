@@ -64,7 +64,7 @@ public class Scraper {
         conn.data("Submit", "Login");
         conn.timeout(0);
         conn.method(Connection.Method.POST);
-        Connection.Response resp = conn.execute();
+        Response resp = conn.execute();
         Document doc = resp.parse();
         String execution = doc.select("input[name=execution]").val();
 
@@ -90,7 +90,7 @@ public class Scraper {
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
         connection.method(Connection.Method.GET);
-        Connection.Response resp = connection.execute();
+        Response resp = connection.execute();
         
         Document doc = resp.parse();
         String nama = doc.select("div[class=namaUser d-none d-lg-block mr-3]").text();
@@ -117,7 +117,7 @@ public class Scraper {
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
         connection.method(Connection.Method.POST);
-        Connection.Response resp = connection.execute();
+        Response resp = connection.execute();
         Document doc = resp.parse();
         Elements nilaiTOEFL = doc.select("table").select("tbody").select("tr");
         if (!nilaiTOEFL.isEmpty()) {
@@ -187,9 +187,8 @@ public class Scraper {
         
         Element elementTempatTanggalLahir = doc.select("div[class=offset-md-1 col-md-10 col-12 headerWrapper my-0 border-bottom]").first().children().get(1).children().get(1).select("h8").get(1);
         String tempatTanggalLahir = elementTempatTanggalLahir.text().substring(2);
-        System.out.println(tempatTanggalLahir);
-        LocalDate localDate = LocalDate.parse(tempatTanggalLahir);
-        System.out.println(localDate.toString());
+//        LocalDate localDate = LocalDate.parse(tempatTanggalLahir);
+//        System.out.println(localDate.toString());
 //        this.mahasiswa.setTanggalLahir(LocalDate.MIN);
     }
     
