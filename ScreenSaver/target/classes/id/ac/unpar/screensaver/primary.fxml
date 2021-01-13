@@ -31,7 +31,7 @@
             <Font size="20.0" />
          </font>
       </Text>
-      <Text fx:id="usia1" layoutX="400.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+      <Text fx:id="status" layoutX="400.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
          <font>
             <Font size="20.0" />
          </font>

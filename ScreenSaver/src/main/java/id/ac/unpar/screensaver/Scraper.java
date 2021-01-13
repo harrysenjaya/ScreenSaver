@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -190,6 +191,9 @@ public class Scraper {
 //        LocalDate localDate = LocalDate.parse(tempatTanggalLahir);
 //        System.out.println(localDate.toString());
 //        this.mahasiswa.setTanggalLahir(LocalDate.MIN);
+        LocalDate temp = LocalDate.of(1999, Month.MAY, 4);
+        this.mahasiswa.setTanggalLahir(temp);
+              
     }
     
     public Mahasiswa getMahasiswa() {

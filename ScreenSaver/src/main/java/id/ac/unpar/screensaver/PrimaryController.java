@@ -4,6 +4,8 @@ import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.TahunSemester;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +45,8 @@ public class PrimaryController implements Initializable{
         this.mahasiswa=this.scraper.getMahasiswa();
         this.nama.setText(this.mahasiswa.getNama());
         this.angkatan.setText(this.angkatan.getText()+this.mahasiswa.getTahunAngkatan());
+        this.usia.setText(this.usia.getText()+Period.between(this.mahasiswa.getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(this.mahasiswa.getTanggalLahir(), LocalDate.now()).getMonths()+ " bulan " + " (lahir " + this.mahasiswa.getTanggalLahir().toString()+ ")");
+        this.status.setText(this.status.getText()+"Tidak Tersedia");
         this.email.setText(this.email.getText()+this.mahasiswa.getEmailAddress());
         this.toefl.setText(this.toefl.getText()+this.mahasiswa.getNilaiTOEFL().get(this.mahasiswa.getNilaiTOEFL().firstKey()).toString());
         this.ipk.setText(this.ipk.getText()+Math.round(this.mahasiswa.calculateIPS() * 100.0) / 100.0+"/"+Math.round(this.mahasiswa.calculateIPKumulatif() * 100.0) / 100.0);
