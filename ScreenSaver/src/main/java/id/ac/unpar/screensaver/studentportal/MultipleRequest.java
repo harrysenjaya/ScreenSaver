@@ -1,4 +1,4 @@
-package id.ac.unpar.screensaver;
+package id.ac.unpar.screensaver.studentportal;
 
 import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.MataKuliah;

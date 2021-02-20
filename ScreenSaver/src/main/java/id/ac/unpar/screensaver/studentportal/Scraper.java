@@ -1,4 +1,4 @@
-package id.ac.unpar.screensaver;
+package id.ac.unpar.screensaver.studentportal;
 
 import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.Mahasiswa.Nilai;
@@ -6,15 +6,21 @@ import id.ac.unpar.siamodels.TahunSemester;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.ProtocolException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SortedMap;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -37,11 +43,17 @@ public class Scraper {
     private final String HOME_URL = BASE_URL + "home";
     private final String PROFILE_URL = BASE_URL + "profil";
 
+    public static final String[] MONTH_NAMES = {
+		"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+	};
+    
     private final Properties credentials;
     private final String npm;
     private final String password;
     
     private Mahasiswa mahasiswa;
+    private String session;
+
     
     public Scraper() throws FileNotFoundException, IOException {
         this.credentials = new Properties();
@@ -57,7 +69,7 @@ public class Scraper {
         baseConn.execute();
     }
     
-    public String login() throws IOException {
+    public void login() throws IOException {
         init();
         this.mahasiswa = new Mahasiswa(this.npm);
         String user = this.mahasiswa.getEmailAddress();
@@ -80,9 +92,7 @@ public class Scraper {
         resp = loginConn.execute();
         if (resp.body().contains(user)) {
             Map<String, String> sessionId = resp.cookies();
-            return sessionId.get("ci_session");
-        } else {
-            return null;
+            this.session = sessionId.get("ci_session");
         }
     }
 
@@ -188,13 +198,44 @@ public class Scraper {
         
         Element elementTempatTanggalLahir = doc.select("div[class=offset-md-1 col-md-10 col-12 headerWrapper my-0 border-bottom]").first().children().get(1).children().get(1).select("h8").get(1);
         String tempatTanggalLahir = elementTempatTanggalLahir.text().substring(2);
-//        LocalDate localDate = LocalDate.parse(tempatTanggalLahir);
-//        System.out.println(localDate.toString());
-//        this.mahasiswa.setTanggalLahir(LocalDate.MIN);
-        LocalDate temp = LocalDate.of(1999, Month.MAY, 4);
-        this.mahasiswa.setTanggalLahir(temp);
-              
+
+        StringTokenizer tokenizer = new StringTokenizer(tempatTanggalLahir);
+        int day = Integer.parseInt(tokenizer.nextToken());
+        int month = Arrays.asList(MONTH_NAMES).indexOf(tokenizer.nextToken()) + 1;
+        if (month < 0) {
+                throw new ProtocolException("Month name not recognized in this date: " + tempatTanggalLahir);
+        }
+        int year = Integer.parseInt(tokenizer.nextToken());
+        this.mahasiswa.setTanggalLahir(LocalDate.of(year, month, day));
     }
+    
+    public Mahasiswa[] requestMahasiswaList() throws IllegalStateException, IOException, InterruptedException {
+        if (session == null) {
+            throw new IllegalStateException("Mohon login terlebih dahulu");
+        }
+        this.requestNamePhotoTahunSemester(this.session);
+
+        List<Mahasiswa> mahasiswaList;
+        mahasiswaList = new ArrayList<>();
+        mahasiswaList.add(this.mahasiswa);
+        Mahasiswa[] mahasiswaArray = new Mahasiswa[mahasiswaList.size()];
+        for(int i = 0; i<mahasiswaArray.length; i++){
+            mahasiswaArray[i] = mahasiswaList.get(i);
+        }
+        return mahasiswaArray;
+    }
+    
+    public Mahasiswa requestMahasiswaDetail(Mahasiswa m) throws IOException{
+        try {
+            requestNilaiTOEFL(this.session);
+            requestNilai(this.session);
+            requestTanggalLahir(this.session);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Scraper.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return m;
+    }
+        
     
     public Mahasiswa getMahasiswa() {
         return mahasiswa;
