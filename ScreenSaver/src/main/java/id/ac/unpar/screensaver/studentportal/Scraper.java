@@ -1,5 +1,6 @@
 package id.ac.unpar.screensaver.studentportal;
 
+import id.ac.unpar.siamodels.JenisKelamin;
 import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.Mahasiswa.Nilai;
 import id.ac.unpar.siamodels.TahunSemester;
@@ -218,6 +219,11 @@ public class Scraper {
         List<Mahasiswa> mahasiswaList;
         mahasiswaList = new ArrayList<>();
         mahasiswaList.add(this.mahasiswa);
+        Mahasiswa dummy = new Mahasiswa("2017730001");
+        dummy.setNama("DUMMY DATA");
+        dummy.setJenisKelamin(JenisKelamin.PEREMPUAN);
+        dummy.setTanggalLahir(LocalDate.of(1,1,1));
+        mahasiswaList.add(dummy);
         Mahasiswa[] mahasiswaArray = new Mahasiswa[mahasiswaList.size()];
         for(int i = 0; i<mahasiswaArray.length; i++){
             mahasiswaArray[i] = mahasiswaList.get(i);
