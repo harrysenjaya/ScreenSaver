@@ -1,7 +1,6 @@
 package id.ac.unpar.screensaver;
 
-import id.ac.unpar.screensaver.studentportal.Scraper;
-import id.ac.unpar.screensaver.studentportal.StudentPortalDataPuller;
+import id.ac.unpar.screensaver.siakad.SIAkadDataPuller;
 import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.TahunSemester;
 import java.io.IOException;
@@ -36,7 +35,7 @@ public class PrimaryController implements Initializable{
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            StudentPortalDataPuller puller = new StudentPortalDataPuller();
+            SIAkadDataPuller puller = new SIAkadDataPuller();
             Mahasiswa[] listMahasiswa = puller.pullMahasiswas();
             mahasiswa = puller.pullMahasiswaDetail(listMahasiswa[0]);
             this.nama.setText(mahasiswa.getNama());
@@ -74,8 +73,6 @@ public class PrimaryController implements Initializable{
         } catch (IOException ex) {
             Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateException ex) {
-            Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
             Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
