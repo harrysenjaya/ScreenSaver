@@ -34,6 +34,7 @@ import org.jsoup.select.Elements;
  * @author harry
  */
 public class Scraper {
+
     private final String BASE_URL = "https://studentportal.unpar.ac.id/";
     private final String LOGIN_URL = BASE_URL + "C_home/sso_login";
     private final String SSO_URL = "https://sso.unpar.ac.id/login";
@@ -45,89 +46,141 @@ public class Scraper {
     private final String PROFILE_URL = BASE_URL + "profil";
 
     public static final String[] MONTH_NAMES = {
-		"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-	};
-    
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    };
+
     private final Properties credentials;
     private final String npm;
     private final String password;
-    
+
     private Mahasiswa mahasiswa;
     private String session;
 
-    
     public Scraper() throws FileNotFoundException, IOException {
         this.credentials = new Properties();
         this.credentials.load(new FileReader("login.properties"));
         this.npm = credentials.getProperty("user.npm");
         this.password = credentials.getProperty("user.password");
     }
-    
-     public void init() throws IOException {
+
+    public void init() throws IOException {
         Connection baseConn = Jsoup.connect(BASE_URL);
         baseConn.timeout(0);
         baseConn.method(Connection.Method.GET);
         baseConn.execute();
     }
-    
-    public void login() throws IOException {
+
+    public String login(String npm, String pass) throws IOException {
         init();
-        this.mahasiswa = new Mahasiswa(this.npm);
-        String user = this.mahasiswa.getEmailAddress();
+        Mahasiswa logged_mhs = new Mahasiswa(npm);
+        String user = logged_mhs.getEmailAddress();
         Connection conn = Jsoup.connect(LOGIN_URL);
         conn.data("Submit", "Login");
         conn.timeout(0);
+        conn.validateTLSCertificates(false);
         conn.method(Connection.Method.POST);
         Response resp = conn.execute();
         Document doc = resp.parse();
+        String lt = doc.select("input[name=lt]").val();
         String execution = doc.select("input[name=execution]").val();
-
+        String jsessionid = resp.cookie("JSESSIONID");
         /* SSO LOGIN */
-        Connection loginConn = Jsoup.connect(SSO_URL + "?service=" + LOGIN_URL);
+        Connection loginConn = Jsoup.connect(SSO_URL + ";jsessionid=" + jsessionid + "?service=" + LOGIN_URL);
+        loginConn.cookies(resp.cookies());
         loginConn.data("username", user);
-        loginConn.data("password", this.password);
+        loginConn.data("password", pass);
+        loginConn.data("lt", lt);
         loginConn.data("execution", execution);
         loginConn.data("_eventId", "submit");
+        loginConn.data("submit", "");
         loginConn.timeout(0);
+        loginConn.validateTLSCertificates(false);
         loginConn.method(Connection.Method.POST);
         resp = loginConn.execute();
         if (resp.body().contains(user)) {
-            Map<String, String> sessionId = resp.cookies();
-            this.session = sessionId.get("ci_session");
+            Map<String, String> phpsessid = resp.cookies();
+            return phpsessid.get("ci_session");
+        } else {
+            return null;
         }
     }
 
-    public void requestNamePhotoTahunSemester(String phpsessid) throws IOException {
-       Connection connection = Jsoup.connect(HOME_URL);
+    public TahunSemester requestNamePhotoTahunSemester(String phpsessid, Mahasiswa mhs) throws IOException {
+        Connection connection = Jsoup.connect(HOME_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
+        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.GET);
         Response resp = connection.execute();
-        
         Document doc = resp.parse();
         String nama = doc.select("div[class=namaUser d-none d-lg-block mr-3]").text();
-        this.mahasiswa.setNama(nama.substring(0, nama.indexOf(this.mahasiswa.getEmailAddress())));
-        
-        Element photo = doc.select("img[class=img-fluid fotoProfil]").first();
+        mhs.setNama(nama.substring(0, nama.indexOf(mhs.getEmailAddress())));
+        Element photo = doc.select("img[class=img-fluid  fotoProfil]").first();
         String photoPath = photo.attr("src");
-        this.mahasiswa.setPhotoPath(photoPath);		
-//        connection = Jsoup.connect(NILAI_URL);
-//        connection.cookie("ci_session", phpsessid);
-//        connection.timeout(0);
-//        connection.method(Connection.Method.GET);
-//        resp = connection.execute();
-//        doc = resp.parse();		
-//        Elements options = doc.getElementsByAttributeValue("name", "dropdownSemester").first().children();   
-//        String curr_sem = options.last().val(); 				
-//        curr_sem = curr_sem.substring(2,4).concat(curr_sem.substring(5));
-//        TahunSemester currTahunSemester = new TahunSemester(curr_sem);
-    } 
+        mhs.setPhotoPath(photoPath);
+        connection = Jsoup.connect(FRSPRS_URL);
+        connection.cookie("ci_session", phpsessid);
+        connection.timeout(0);
+        connection.validateTLSCertificates(false);
+        connection.method(Connection.Method.GET);
+        resp = connection.execute();
+        doc = resp.parse();
+        String curr_sem = doc.select(".custom-selectContent span").text();
+        String[] sem_set = parseSemester(curr_sem);
+        TahunSemester currTahunSemester = new TahunSemester(Integer.parseInt(sem_set[0]),
+                Semester.fromString(sem_set[1]));
+        return currTahunSemester;
+    }
 
-    public void requestNilaiTOEFL(String phpsessid) throws IOException {
+    public void requestNilai(String phpsessid, Mahasiswa logged_mhs) throws IOException, InterruptedException {
+        Connection connection = Jsoup.connect(NILAI_URL);
+        connection.cookie("ci_session", phpsessid);
+        connection.timeout(0);
+        connection.validateTLSCertificates(false);
+        connection.method(Connection.Method.POST);
+        Response resp = connection.execute();
+        Document doc = resp.parse();
+
+        Elements dropdownSemester = doc.select("#dropdownSemester option");
+        ArrayList<String> listSemester = new ArrayList<String>();
+        for (Element semester : dropdownSemester) {
+            listSemester.add(semester.attr("value"));
+        }
+
+        Thread[] threadUrl = new Thread[listSemester.size() - 1];
+        for (int i = 0; i < listSemester.size() - 1; i++) {
+            threadUrl[i] = new Thread(new MultipleRequest(i, listSemester, NILAI_URL, phpsessid, logged_mhs));
+            threadUrl[i].start();
+        }
+        for (int i = 0; i < listSemester.size() - 1; i++) {
+            threadUrl[i].join();
+        }
+        Collections.sort(logged_mhs.getRiwayatNilai(), new Comparator<Nilai>() {
+            @Override
+            public int compare(Nilai o1, Nilai o2) {
+                if (o1.getTahunAjaran() < o2.getTahunAjaran()) {
+                    return -1;
+                }
+                if (o1.getTahunAjaran() > o2.getTahunAjaran()) {
+                    return +1;
+                }
+                if (o1.getSemester().getOrder() < o2.getSemester().getOrder()) {
+                    return -1;
+                }
+                if (o1.getSemester().getOrder() > o2.getSemester().getOrder()) {
+                    return +1;
+                }
+                return 0;
+            }
+        });
+    }
+
+    public void requestNilaiTOEFL(String phpsessid, Mahasiswa mahasiswa) throws IOException {
         SortedMap<LocalDate, Integer> nilaiTerakhirTOEFL = new TreeMap<>();
         Connection connection = Jsoup.connect(TOEFL_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
+        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.POST);
         Response resp = connection.execute();
         Document doc = resp.parse();
@@ -136,67 +189,63 @@ public class Scraper {
             for (int i = 0; i < nilaiTOEFL.size(); i++) {
                 Element nilai = nilaiTOEFL.get(i).select("td").get(5);
                 Element tgl_toefl = nilaiTOEFL.get(i).select("td").get(1);
-                String[] tanggal = tgl_toefl.text().split("-");
+                String[] tanggal = tgl_toefl.text().split(" ");
+                switch (tanggal[1].toLowerCase()) {
+                    case "januari":
+                        tanggal[1] = "1";
+                        break;
+                    case "februari":
+                        tanggal[1] = "2";
+                        break;
+                    case "maret":
+                        tanggal[1] = "3";
+                        break;
+                    case "april":
+                        tanggal[1] = "4";
+                        break;
+                    case "mei":
+                        tanggal[1] = "5";
+                        break;
+                    case "juni":
+                        tanggal[1] = "6";
+                        break;
+                    case "juli":
+                        tanggal[1] = "7";
+                        break;
+                    case "agustus":
+                        tanggal[1] = "8";
+                        break;
+                    case "september":
+                        tanggal[1] = "9";
+                        break;
+                    case "oktober":
+                        tanggal[1] = "10";
+                        break;
+                    case "november":
+                        tanggal[1] = "11";
+                        break;
+                    case "desember":
+                        tanggal[1] = "12";
+                        break;
+                }
 
                 LocalDate localDate = LocalDate.of(Integer.parseInt(tanggal[2]), Integer.parseInt(tanggal[1]),
-                                Integer.parseInt(tanggal[0]));
+                        Integer.parseInt(tanggal[0]));
 
                 nilaiTerakhirTOEFL.put(localDate, Integer.parseInt(nilai.text()));
             }
         }
-        this.mahasiswa.setNilaiTOEFL(nilaiTerakhirTOEFL);
+        mahasiswa.setNilaiTOEFL(nilaiTerakhirTOEFL);
     }
-    
-    public void requestNilai(String phpsessid) throws IOException, InterruptedException {
-        Connection connection = Jsoup.connect(NILAI_URL);
-        connection.cookie("ci_session", phpsessid);
-        connection.timeout(0);
-        connection.method(Connection.Method.POST);
-        Response resp = connection.execute();
-        Document doc = resp.parse();
 
-        Elements dropdownSemester = doc.select("#dropdownSemester option");
-        ArrayList<String> listSemester = new ArrayList<String>();
-        for (Element semester : dropdownSemester){
-            listSemester.add(semester.attr("value"));
-        }
-
-        Thread[] threadUrl = new Thread[listSemester.size()-1];
-        for(int i = 0; i < listSemester.size()-1; i++){
-                threadUrl[i] = new Thread(new MultipleRequest(i, listSemester, NILAI_URL, phpsessid, this.mahasiswa));
-                threadUrl[i].start();
-        }
-        for(int i = 0; i < listSemester.size()-1; i++){
-                threadUrl[i].join();
-        }
-        Collections.sort(this.mahasiswa.getRiwayatNilai(), new Comparator<Nilai>() {
-                @Override
-                public int compare(Nilai o1, Nilai o2) {
-                        if (o1.getTahunAjaran() < o2.getTahunAjaran()) {
-                                return -1;
-                        }
-                        if (o1.getTahunAjaran() > o2.getTahunAjaran()) {
-                                return + 1;
-                        }
-                        if (o1.getSemester().getOrder() < o2.getSemester().getOrder()) {
-                                return -1;
-                        }
-                        if (o1.getSemester().getOrder() > o2.getSemester().getOrder()) {
-                                return +1;
-                        }
-                        return 0;
-                }
-        });
-    }
-    
-    public void requestTanggalLahir(String phpsessid) throws IOException{
+    public void requestTanggalLahir(String phpsessid) throws IOException {
         Connection connection = Jsoup.connect(PROFILE_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
         connection.method(Connection.Method.POST);
         Response resp = connection.execute();
         Document doc = resp.parse();
-        
+
         Element elementTempatTanggalLahir = doc.select("div[class=offset-md-1 col-md-10 col-12 headerWrapper my-0 border-bottom]").first().children().get(1).children().get(1).select("h8").get(1);
         String tempatTanggalLahir = elementTempatTanggalLahir.text().substring(2);
 
@@ -204,12 +253,12 @@ public class Scraper {
         int day = Integer.parseInt(tokenizer.nextToken());
         int month = Arrays.asList(MONTH_NAMES).indexOf(tokenizer.nextToken()) + 1;
         if (month < 0) {
-                throw new ProtocolException("Month name not recognized in this date: " + tempatTanggalLahir);
+            throw new ProtocolException("Month name not recognized in this date: " + tempatTanggalLahir);
         }
         int year = Integer.parseInt(tokenizer.nextToken());
         this.mahasiswa.setTanggalLahir(LocalDate.of(year, month, day));
     }
-    
+
     public Mahasiswa[] requestMahasiswaList() throws IllegalStateException, IOException, InterruptedException {
         if (session == null) {
             throw new IllegalStateException("Mohon login terlebih dahulu");
@@ -222,16 +271,16 @@ public class Scraper {
         Mahasiswa dummy = new Mahasiswa("2017730001");
         dummy.setNama("DUMMY DATA");
         dummy.setJenisKelamin(JenisKelamin.PEREMPUAN);
-        dummy.setTanggalLahir(LocalDate.of(1,1,1));
+        dummy.setTanggalLahir(LocalDate.of(1, 1, 1));
         mahasiswaList.add(dummy);
         Mahasiswa[] mahasiswaArray = new Mahasiswa[mahasiswaList.size()];
-        for(int i = 0; i<mahasiswaArray.length; i++){
+        for (int i = 0; i < mahasiswaArray.length; i++) {
             mahasiswaArray[i] = mahasiswaList.get(i);
         }
         return mahasiswaArray;
     }
-    
-    public Mahasiswa requestMahasiswaDetail(Mahasiswa m) throws IOException{
+
+    public Mahasiswa requestMahasiswaDetail(Mahasiswa m) throws IOException {
         try {
             requestNilaiTOEFL(this.session);
             requestNilai(this.session);
@@ -241,10 +290,9 @@ public class Scraper {
         }
         return m;
     }
-        
-    
+
     public Mahasiswa getMahasiswa() {
         return mahasiswa;
     }
-    
+
 }
