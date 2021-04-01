@@ -96,24 +96,22 @@ public class Scraper {
         Connection connection = Jsoup.connect(HOME_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
-        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.GET);
         Response resp = connection.execute();
         Document doc = resp.parse();
         String nama = doc.select("div[class=namaUser d-none d-lg-block mr-3]").text();
         mhs.setNama(nama.substring(0, nama.indexOf(mhs.getEmailAddress())));
-        Element photo = doc.select("img[class=img-fluid  fotoProfil]").first();
+        Element photo = doc.select("img[class=img-fluid fotoProfil]").first();
         String photoPath = photo.attr("src");
         mhs.setPhotoPath(photoPath);
-        connection = Jsoup.connect(FRSPRS_URL);
+        connection = Jsoup.connect(NILAI_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
-        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.GET);
         resp = connection.execute();
         doc = resp.parse();
-        String curr_sem = doc.select(".custom-selectContent span").text();
-        String[] sem_set = parseSemester(curr_sem);
+        Elements curr_sem = doc.select("select[class=custom-select mr-3]");
+        String[] sem_set = parseSemester(curr_sem.first().child(curr_sem.first().childrenSize() - 1).text());
         TahunSemester currTahunSemester = new TahunSemester(Integer.parseInt(sem_set[0]),
                 Semester.fromString(sem_set[1]));
         return currTahunSemester;
@@ -214,7 +212,7 @@ public class Scraper {
     }
 
     public String[] parseSemester(String sem_raw) {
-        String[] sem_set = sem_raw.split("/")[0].split("-");
+        String[] sem_set = sem_raw.split("/")[0].split(" ");
         return new String[]{sem_set[1].trim(), sem_set[0].trim()};
     }
 
