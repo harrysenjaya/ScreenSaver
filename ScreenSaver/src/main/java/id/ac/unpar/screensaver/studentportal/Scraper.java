@@ -131,7 +131,6 @@ public class Scraper {
         Connection connection = Jsoup.connect(NILAI_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
-        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.POST);
         Response resp = connection.execute();
         Document doc = resp.parse();
