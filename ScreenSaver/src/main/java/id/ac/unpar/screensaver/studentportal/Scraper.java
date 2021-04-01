@@ -45,14 +45,14 @@ public class Scraper {
     private final String LOGOUT_URL = BASE_URL + "logout";
     private final String HOME_URL = BASE_URL + "home";
     private final String PROFILE_URL = BASE_URL + "profil";
-    private final String FRSPRS_URL = BASE_URL + "frs_prs";
+    private final String FRSPRS_URL = "https://restu.unpar.ac.id/frs_prs";
 
     public static final String[] MONTH_NAMES = {
         "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     };
 
     public Scraper() throws FileNotFoundException, IOException {
-        
+
     }
 
     public void init() throws IOException {
@@ -96,18 +96,19 @@ public class Scraper {
         Connection connection = Jsoup.connect(HOME_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
+        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.GET);
         Response resp = connection.execute();
         Document doc = resp.parse();
         String nama = doc.select("div[class=namaUser d-none d-lg-block mr-3]").text();
         mhs.setNama(nama.substring(0, nama.indexOf(mhs.getEmailAddress())));
-        Elements photo = doc.select("img[class=img-fluid  fotoProfil]");
-        System.out.println(photo.toString());
+        Element photo = doc.select("img[class=img-fluid  fotoProfil]").first();
         String photoPath = photo.attr("src");
         mhs.setPhotoPath(photoPath);
         connection = Jsoup.connect(FRSPRS_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
+        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.GET);
         resp = connection.execute();
         doc = resp.parse();
@@ -226,7 +227,7 @@ public class Scraper {
         List<Mahasiswa> mahasiswaList;
         mahasiswaList = new ArrayList<>();
         mahasiswaList.add(mahasiswa);
-        
+
         Mahasiswa dummy = new Mahasiswa("2017730001");
         dummy.setNama("DUMMY DATA");
         dummy.setJenisKelamin(JenisKelamin.PEREMPUAN);
@@ -249,6 +250,5 @@ public class Scraper {
         }
         return mahasiswa;
     }
-
 
 }
