@@ -51,18 +51,8 @@ public class Scraper {
         "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     };
 
-    private final Properties credentials;
-    private final String npm;
-    private final String password;
-
-    private Mahasiswa mahasiswa;
-    private String session;
-
     public Scraper() throws FileNotFoundException, IOException {
-        this.credentials = new Properties();
-        this.credentials.load(new FileReader("login.properties"));
-        this.npm = credentials.getProperty("user.npm");
-        this.password = credentials.getProperty("user.password");
+        
     }
 
     public void init() throws IOException {
@@ -111,7 +101,8 @@ public class Scraper {
         Document doc = resp.parse();
         String nama = doc.select("div[class=namaUser d-none d-lg-block mr-3]").text();
         mhs.setNama(nama.substring(0, nama.indexOf(mhs.getEmailAddress())));
-        Element photo = doc.select("img[class=img-fluid  fotoProfil]").first();
+        Elements photo = doc.select("img[class=img-fluid  fotoProfil]");
+        System.out.println(photo.toString());
         String photoPath = photo.attr("src");
         mhs.setPhotoPath(photoPath);
         connection = Jsoup.connect(FRSPRS_URL);
@@ -193,7 +184,7 @@ public class Scraper {
         mahasiswa.setNilaiTOEFL(nilaiTerakhirTOEFL);
     }
 
-    public void requestTanggalLahir(String phpsessid) throws IOException {
+    public void requestTanggalLahir(String phpsessid, Mahasiswa mahasiswa) throws IOException {
         Connection connection = Jsoup.connect(PROFILE_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
@@ -211,7 +202,7 @@ public class Scraper {
             throw new ProtocolException("Month name not recognized in this date: " + tempatTanggalLahir);
         }
         int year = Integer.parseInt(tokenizer.nextToken());
-        this.mahasiswa.setTanggalLahir(LocalDate.of(year, month, day));
+        mahasiswa.setTanggalLahir(LocalDate.of(year, month, day));
     }
 
     public void logout() throws IOException {
@@ -226,15 +217,16 @@ public class Scraper {
         return new String[]{sem_set[1].trim(), sem_set[0].trim()};
     }
 
-    public Mahasiswa[] requestMahasiswaList() throws IllegalStateException, IOException, InterruptedException {
-        if (session == null) {
+    public Mahasiswa[] requestMahasiswaList(String phpsessid, Mahasiswa mahasiswa) throws IllegalStateException, IOException, InterruptedException {
+        if (phpsessid == null) {
             throw new IllegalStateException("Mohon login terlebih dahulu");
         }
-        this.requestNamePhotoTahunSemester(this.session);
+        this.requestNamePhotoTahunSemester(phpsessid, mahasiswa);
 
         List<Mahasiswa> mahasiswaList;
         mahasiswaList = new ArrayList<>();
-        mahasiswaList.add(this.mahasiswa);
+        mahasiswaList.add(mahasiswa);
+        
         Mahasiswa dummy = new Mahasiswa("2017730001");
         dummy.setNama("DUMMY DATA");
         dummy.setJenisKelamin(JenisKelamin.PEREMPUAN);
@@ -247,19 +239,16 @@ public class Scraper {
         return mahasiswaArray;
     }
 
-    public Mahasiswa requestMahasiswaDetail(Mahasiswa m) throws IOException {
+    public Mahasiswa requestMahasiswaDetail(String phpsessid, Mahasiswa mahasiswa) throws IOException {
         try {
-            requestNilaiTOEFL(this.session);
-            requestNilai(this.session);
-            requestTanggalLahir(this.session);
+            this.requestNilaiTOEFL(phpsessid, mahasiswa);
+            this.requestNilai(phpsessid, mahasiswa);
+            this.requestTanggalLahir(phpsessid, mahasiswa);
         } catch (InterruptedException ex) {
             Logger.getLogger(Scraper.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return m;
-    }
-
-    public Mahasiswa getMahasiswa() {
         return mahasiswa;
     }
+
 
 }
