@@ -174,7 +174,6 @@ public class Scraper {
         Connection connection = Jsoup.connect(TOEFL_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
-        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.POST);
         Response resp = connection.execute();
         Document doc = resp.parse();
@@ -183,45 +182,7 @@ public class Scraper {
             for (int i = 0; i < nilaiTOEFL.size(); i++) {
                 Element nilai = nilaiTOEFL.get(i).select("td").get(5);
                 Element tgl_toefl = nilaiTOEFL.get(i).select("td").get(1);
-                String[] tanggal = tgl_toefl.text().split(" ");
-                switch (tanggal[1].toLowerCase()) {
-                    case "januari":
-                        tanggal[1] = "1";
-                        break;
-                    case "februari":
-                        tanggal[1] = "2";
-                        break;
-                    case "maret":
-                        tanggal[1] = "3";
-                        break;
-                    case "april":
-                        tanggal[1] = "4";
-                        break;
-                    case "mei":
-                        tanggal[1] = "5";
-                        break;
-                    case "juni":
-                        tanggal[1] = "6";
-                        break;
-                    case "juli":
-                        tanggal[1] = "7";
-                        break;
-                    case "agustus":
-                        tanggal[1] = "8";
-                        break;
-                    case "september":
-                        tanggal[1] = "9";
-                        break;
-                    case "oktober":
-                        tanggal[1] = "10";
-                        break;
-                    case "november":
-                        tanggal[1] = "11";
-                        break;
-                    case "desember":
-                        tanggal[1] = "12";
-                        break;
-                }
+                String[] tanggal = tgl_toefl.text().split("-");
 
                 LocalDate localDate = LocalDate.of(Integer.parseInt(tanggal[2]), Integer.parseInt(tanggal[1]),
                         Integer.parseInt(tanggal[0]));
