@@ -66,7 +66,6 @@ public class Scraper {
     public void init() throws IOException {
         Connection baseConn = Jsoup.connect(BASE_URL);
         baseConn.timeout(0);
-        baseConn.validateTLSCertificates(false);
         baseConn.method(Connection.Method.GET);
         baseConn.execute();
     }
@@ -78,11 +77,9 @@ public class Scraper {
         Connection conn = Jsoup.connect(LOGIN_URL);
         conn.data("Submit", "Login");
         conn.timeout(0);
-        conn.validateTLSCertificates(false);
         conn.method(Connection.Method.POST);
         Response resp = conn.execute();
         Document doc = resp.parse();
-        String lt = doc.select("input[name=lt]").val();
         String execution = doc.select("input[name=execution]").val();
         String jsessionid = resp.cookie("JSESSIONID");
         /* SSO LOGIN */
@@ -90,12 +87,9 @@ public class Scraper {
         loginConn.cookies(resp.cookies());
         loginConn.data("username", user);
         loginConn.data("password", pass);
-        loginConn.data("lt", lt);
         loginConn.data("execution", execution);
         loginConn.data("_eventId", "submit");
-        loginConn.data("submit", "");
         loginConn.timeout(0);
-        loginConn.validateTLSCertificates(false);
         loginConn.method(Connection.Method.POST);
         resp = loginConn.execute();
         if (resp.body().contains(user)) {
