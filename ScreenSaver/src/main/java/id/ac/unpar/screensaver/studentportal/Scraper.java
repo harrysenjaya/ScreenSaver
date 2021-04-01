@@ -3,6 +3,7 @@ package id.ac.unpar.screensaver.studentportal;
 import id.ac.unpar.siamodels.JenisKelamin;
 import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.Mahasiswa.Nilai;
+import id.ac.unpar.siamodels.Semester;
 import id.ac.unpar.siamodels.TahunSemester;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -44,6 +45,7 @@ public class Scraper {
     private final String LOGOUT_URL = BASE_URL + "logout";
     private final String HOME_URL = BASE_URL + "home";
     private final String PROFILE_URL = BASE_URL + "profil";
+    private final String FRSPRS_URL = BASE_URL + "frs_prs";
 
     public static final String[] MONTH_NAMES = {
         "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"
@@ -104,7 +106,6 @@ public class Scraper {
         Connection connection = Jsoup.connect(HOME_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
-        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.GET);
         Response resp = connection.execute();
         Document doc = resp.parse();
@@ -116,7 +117,6 @@ public class Scraper {
         connection = Jsoup.connect(FRSPRS_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
-        connection.validateTLSCertificates(false);
         connection.method(Connection.Method.GET);
         resp = connection.execute();
         doc = resp.parse();
@@ -252,6 +252,18 @@ public class Scraper {
         }
         int year = Integer.parseInt(tokenizer.nextToken());
         this.mahasiswa.setTanggalLahir(LocalDate.of(year, month, day));
+    }
+
+    public void logout() throws IOException {
+        Connection logoutConn = Jsoup.connect(LOGOUT_URL);
+        logoutConn.timeout(0);
+        logoutConn.method(Connection.Method.GET);
+        logoutConn.execute();
+    }
+
+    public String[] parseSemester(String sem_raw) {
+        String[] sem_set = sem_raw.split("/")[0].split("-");
+        return new String[]{sem_set[1].trim(), sem_set[0].trim()};
     }
 
     public Mahasiswa[] requestMahasiswaList() throws IllegalStateException, IOException, InterruptedException {
