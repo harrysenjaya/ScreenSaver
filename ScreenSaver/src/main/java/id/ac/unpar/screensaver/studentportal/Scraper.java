@@ -66,6 +66,7 @@ public class Scraper {
     public void init() throws IOException {
         Connection baseConn = Jsoup.connect(BASE_URL);
         baseConn.timeout(0);
+        baseConn.validateTLSCertificates(false);
         baseConn.method(Connection.Method.GET);
         baseConn.execute();
     }
