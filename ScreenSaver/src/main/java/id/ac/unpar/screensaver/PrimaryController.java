@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,11 +76,12 @@ public class PrimaryController implements Initializable{
                     } else {
                         this.toefl.setText("Tidak Tersedia");
                     }
-
-
                     this.ipk.setText(Math.round(mahasiswa.calculateIPS() * 100.0) / 100.0+"/"+Math.round(mahasiswa.calculateIPKumulatif() * 100.0) / 100.0);
                     this.sks.setText(+mahasiswa.calculateSKSLulus()+"/"+mahasiswa.calculateSKSTempuh(false));    
                     i+=1;
+                    System.err.println("mahasiswa.getNama(): " + mahasiswa.getNama());
+                    System.err.println("mahasiswa.getPhotoPath(): " + mahasiswa.getPhotoPath());
+                    System.err.println("Arrays.toString(mahasiswa.getPhotoImage()" + Arrays.toString(mahasiswa.getPhotoImage()));
                 } catch (IOException ex) {
                     Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
                 }

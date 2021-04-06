@@ -37,6 +37,7 @@ public class SIAkadDataPuller {
     
     public Mahasiswa pullMahasiswaDetail(Mahasiswa m) throws IOException {
         siakad.requestRiwayatNilai(m, false);
+        siakad.requestDataDiri(m);
         return m;
     }
 }
