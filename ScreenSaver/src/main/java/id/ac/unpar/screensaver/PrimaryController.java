@@ -40,10 +40,19 @@ public class PrimaryController implements Initializable{
             mahasiswa = puller.pullMahasiswaDetail(listMahasiswa[0]);
             this.nama.setText(mahasiswa.getNama());
             this.angkatan.setText(mahasiswa.getTahunAngkatan()+"");
-            this.usia.setText(Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getMonths()+ " bulan " + " (lahir " + mahasiswa.getTanggalLahir().toString()+ ")");
+            if (mahasiswa.getTanggalLahir() != null) {
+                this.usia.setText(Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getMonths()+ " bulan " + " (lahir " + mahasiswa.getTanggalLahir().toString()+ ")");
+            } else {
+                this.usia.setText("Tidak Tersedia");
+            }
             this.status.setText("Tidak Tersedia");
             this.email.setText(mahasiswa.getEmailAddress());
-            this.toefl.setText(mahasiswa.getNilaiTOEFL().get(mahasiswa.getNilaiTOEFL().firstKey()).toString());
+            if (mahasiswa.getNilaiTOEFL() != null && !mahasiswa.getNilaiTOEFL().isEmpty()) {
+                this.toefl.setText(mahasiswa.getNilaiTOEFL().get(mahasiswa.getNilaiTOEFL().firstKey()).toString());
+            } else {
+                this.toefl.setText("Tidak Tersedia");
+            }
+            
             this.ipk.setText(Math.round(mahasiswa.calculateIPS() * 100.0) / 100.0+"/"+Math.round(mahasiswa.calculateIPKumulatif() * 100.0) / 100.0);
             this.sks.setText(+mahasiswa.calculateSKSLulus()+"/"+mahasiswa.calculateSKSTempuh(false));    
             Timeline timeline = new Timeline(

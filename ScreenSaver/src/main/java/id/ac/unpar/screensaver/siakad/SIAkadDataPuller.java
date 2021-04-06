@@ -9,6 +9,7 @@ import id.ac.unpar.siamodels.Mahasiswa;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -23,14 +24,15 @@ public class SIAkadDataPuller {
         Properties auth = new Properties();
         auth.load(new FileReader("login-dosen.properties"));
         String username = auth.getProperty("username");
-        String password = auth.getProperty("password");
+        String password = auth.getProperty("user.password");
 
         this.siakad = new SIAkad();
         this.siakad.login(username, password);
     }
     
     public Mahasiswa[] pullMahasiswas() throws IOException {
-        return (Mahasiswa[])siakad.requestMahasiswaList().toArray();
+        List<Mahasiswa> mahasiswas = siakad.requestMahasiswaList();
+        return (Mahasiswa[])mahasiswas.toArray(new Mahasiswa[mahasiswas.size()]);
     }
     
     public Mahasiswa pullMahasiswaDetail(Mahasiswa m) throws IOException {
