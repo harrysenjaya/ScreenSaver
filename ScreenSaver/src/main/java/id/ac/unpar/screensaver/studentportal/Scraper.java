@@ -5,6 +5,8 @@ import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.Mahasiswa.Nilai;
 import id.ac.unpar.siamodels.Semester;
 import id.ac.unpar.siamodels.TahunSemester;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -221,6 +223,14 @@ public class Scraper {
             throw new IllegalStateException("Mohon login terlebih dahulu");
         }
         this.requestNamePhotoTahunSemester(phpsessid, mahasiswa);
+        String file = "foto_harry.txt";
+
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String currentLine = reader.readLine();
+        reader.close();
+
+        System.out.println(currentLine);
+        mahasiswa.setPhotoPath(currentLine);
 
         List<Mahasiswa> mahasiswaList;
         mahasiswaList = new ArrayList<>();
@@ -243,6 +253,7 @@ public class Scraper {
             this.requestNilaiTOEFL(phpsessid, mahasiswa);
             this.requestNilai(phpsessid, mahasiswa);
             this.requestTanggalLahir(phpsessid, mahasiswa);
+
         } catch (InterruptedException ex) {
             Logger.getLogger(Scraper.class.getName()).log(Level.SEVERE, null, ex);
         }

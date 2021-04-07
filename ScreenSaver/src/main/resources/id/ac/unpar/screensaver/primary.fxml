@@ -10,7 +10,7 @@
    <children>
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="800.0" StackPane.alignment="CENTER">
          <children>
-            <ImageView fx:id="foto" layoutX="15.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="foto" fitHeight="250.0" fitWidth="180.0" layoutX="15.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true" />
             <Text fx:id="nama" layoutX="214.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
                <font>
                   <Font size="25.0" />
