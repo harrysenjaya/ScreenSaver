@@ -37,7 +37,7 @@ public class PrimaryController implements Initializable {
     @FXML
     private ImageView foto;
 
-    int i = 1;
+    int counter = 1;
 
     public PrimaryController() throws IOException {
 
@@ -83,7 +83,7 @@ public class PrimaryController implements Initializable {
                                 // this.toefl.setText(listMahasiswa[1].getNilaiTOEFL().get(listMahasiswa[1].getNilaiTOEFL().firstKey()).toString());
 //                    this.ipk.setText(Math.round(listMahasiswa[1].calculateIPS() * 100.0) / 100.0+"/"+Math.round(listMahasiswa[1].calculateIPKumulatif() * 100.0) / 100.0);
 //                    this.sks.setText(+listMahasiswa[1].calculateSKSLulus()+"/"+listMahasiswa[1].calculateSKSTempuh(false));
-                                i += 1;
+                                counter += 1;
                             }
                     )
             );

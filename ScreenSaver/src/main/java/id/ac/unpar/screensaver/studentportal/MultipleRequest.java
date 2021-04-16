@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class MultipleRequest implements Runnable {
 
-    private int l;
+    private int rawSemester;
     private ArrayList<String> listSemester;
     private String NILAI_URL;
     private String phpsessid;
@@ -28,7 +28,7 @@ public class MultipleRequest implements Runnable {
     ScriptEngine engine;
 
     MultipleRequest(int l, ArrayList<String> listSemester, String NILAI_URL, String phpsessid, Mahasiswa logged_mhs) {
-        this.l = l;
+        this.rawSemester = l;
         this.listSemester = listSemester;
         this.NILAI_URL = NILAI_URL;
         this.phpsessid = phpsessid;
@@ -40,7 +40,7 @@ public class MultipleRequest implements Runnable {
     @Override
     public void run() {
         try {
-            String[] thn_sem = listSemester.get(l).split("-");
+            String[] thn_sem = listSemester.get(rawSemester).split("-");
             String thn = thn_sem[0];
             String sem = thn_sem[1];
             Connection connection = Jsoup.connect(NILAI_URL + "/" + thn + "/" + sem);
