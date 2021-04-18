@@ -37,7 +37,15 @@ public class PrimaryController implements Initializable {
     @FXML
     private ImageView foto;
 
-    int counter = 1;
+    private int indexOfMahasiswa;
+
+    public int getIndexOfMahasiswa() {
+        return indexOfMahasiswa;
+    }
+
+    public void setIndexOfMahasiswa(int indexOfMahasiswa) {
+        this.indexOfMahasiswa = indexOfMahasiswa;
+    }
 
     public PrimaryController() throws IOException {
 
@@ -46,6 +54,7 @@ public class PrimaryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
+            this.setIndexOfMahasiswa(1);
             StudentPortalDataPuller puller = new StudentPortalDataPuller();
             Mahasiswa[] listMahasiswa = puller.pullMahasiswas();
             listMahasiswa[0] = puller.pullMahasiswaDetail();
@@ -83,7 +92,7 @@ public class PrimaryController implements Initializable {
                                 // this.toefl.setText(listMahasiswa[1].getNilaiTOEFL().get(listMahasiswa[1].getNilaiTOEFL().firstKey()).toString());
 //                    this.ipk.setText(Math.round(listMahasiswa[1].calculateIPS() * 100.0) / 100.0+"/"+Math.round(listMahasiswa[1].calculateIPKumulatif() * 100.0) / 100.0);
 //                    this.sks.setText(+listMahasiswa[1].calculateSKSLulus()+"/"+listMahasiswa[1].calculateSKSTempuh(false));
-                                counter += 1;
+                                this.setIndexOfMahasiswa(this.getIndexOfMahasiswa()+1);
                             }
                     )
             );
