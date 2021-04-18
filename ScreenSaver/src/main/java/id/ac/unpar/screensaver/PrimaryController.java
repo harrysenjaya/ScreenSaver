@@ -83,16 +83,20 @@ public class PrimaryController implements Initializable {
                     new KeyFrame(
                             Duration.seconds(10),
                             event -> {
-                                // listMahasiswa[1] = puller.pullMahasiswaDetail();
-                                this.nama.setText(listMahasiswa[1].getNama());
-                                this.angkatan.setText(listMahasiswa[1].getTahunAngkatan() + "");
-                                this.usia.setText(Period.between(listMahasiswa[1].getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(listMahasiswa[1].getTanggalLahir(), LocalDate.now()).getMonths() + " bulan " + " (lahir " + listMahasiswa[1].getTanggalLahir().toString() + ")");
-                                this.status.setText("Tidak Tersedia");
-                                this.email.setText(listMahasiswa[1].getEmailAddress());
-                                // this.toefl.setText(listMahasiswa[1].getNilaiTOEFL().get(listMahasiswa[1].getNilaiTOEFL().firstKey()).toString());
-//                    this.ipk.setText(Math.round(listMahasiswa[1].calculateIPS() * 100.0) / 100.0+"/"+Math.round(listMahasiswa[1].calculateIPKumulatif() * 100.0) / 100.0);
-//                    this.sks.setText(+listMahasiswa[1].calculateSKSLulus()+"/"+listMahasiswa[1].calculateSKSTempuh(false));
-                                this.setIndexOfMahasiswa(this.getIndexOfMahasiswa()+1);
+                                if (this.getIndexOfMahasiswa() == listMahasiswa.length) {
+                                    this.setIndexOfMahasiswa(0);
+                                } else {
+                                    // listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail();
+                                    this.nama.setText(listMahasiswa[this.getIndexOfMahasiswa()].getNama());
+                                    this.angkatan.setText(listMahasiswa[this.getIndexOfMahasiswa()].getTahunAngkatan() + "");
+                                    this.usia.setText(Period.between(listMahasiswa[this.getIndexOfMahasiswa()].getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(listMahasiswa[1].getTanggalLahir(), LocalDate.now()).getMonths() + " bulan " + " (lahir " + listMahasiswa[1].getTanggalLahir().toString() + ")");
+                                    this.status.setText("Tidak Tersedia");
+                                    this.email.setText(listMahasiswa[this.getIndexOfMahasiswa()].getEmailAddress());
+                                    this.toefl.setText(listMahasiswa[this.getIndexOfMahasiswa()].getNilaiTOEFL().get(listMahasiswa[this.getIndexOfMahasiswa()].getNilaiTOEFL().firstKey()).toString());
+                                    this.ipk.setText(Math.round(listMahasiswa[this.getIndexOfMahasiswa()].calculateIPS() * 100.0) / 100.0 + "/" + Math.round(listMahasiswa[this.getIndexOfMahasiswa()].calculateIPKumulatif() * 100.0) / 100.0);
+                                    this.sks.setText(+listMahasiswa[this.getIndexOfMahasiswa()].calculateSKSLulus() + "/" + listMahasiswa[this.getIndexOfMahasiswa()].calculateSKSTempuh(false));
+                                    this.setIndexOfMahasiswa(this.getIndexOfMahasiswa() + 1);
+                                }
                             }
                     )
             );

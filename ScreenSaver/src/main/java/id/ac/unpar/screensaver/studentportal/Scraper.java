@@ -240,6 +240,7 @@ public class Scraper {
         dummy.setNama("DUMMY DATA");
         dummy.setJenisKelamin(JenisKelamin.PEREMPUAN);
         dummy.setTanggalLahir(LocalDate.of(1, 1, 1));
+        this.requestMahasiswaDetail(phpsessid, dummy);
         mahasiswaList.add(dummy);
         Mahasiswa[] mahasiswaArray = new Mahasiswa[mahasiswaList.size()];
         for (int i = 0; i < mahasiswaArray.length; i++) {
