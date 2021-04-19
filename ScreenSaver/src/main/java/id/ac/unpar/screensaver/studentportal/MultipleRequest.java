@@ -19,20 +19,20 @@ import java.util.Map;
 
 public class MultipleRequest implements Runnable {
 
-    private int rawSemester;
+    private int index;
     private ArrayList<String> listSemester;
     private String NILAI_URL;
     private String phpsessid;
-    private Mahasiswa logged_mhs;
+    private Mahasiswa mahasiswa;
     ScriptEngineManager factory;
     ScriptEngine engine;
 
-    MultipleRequest(int rawSemester, ArrayList<String> listSemester, String NILAI_URL, String phpsessid, Mahasiswa mahasiswa) {
-        this.rawSemester = rawSemester;
+    MultipleRequest(int index, ArrayList<String> listSemester, String NILAI_URL, String phpsessid, Mahasiswa mahasiswa) {
+        this.index = index;
         this.listSemester = listSemester;
         this.NILAI_URL = NILAI_URL;
         this.phpsessid = phpsessid;
-        this.logged_mhs = logged_mhs;
+        this.mahasiswa = mahasiswa;
         factory = new ScriptEngineManager();
         engine = factory.getEngineByName("JavaScript");
     }
@@ -40,7 +40,7 @@ public class MultipleRequest implements Runnable {
     @Override
     public void run() {
         try {
-            String[] thn_sem = listSemester.get(rawSemester).split("-");
+            String[] thn_sem = listSemester.get(index).split("-");
             String thn = thn_sem[0];
             String sem = thn_sem[1];
             Connection connection = Jsoup.connect(NILAI_URL + "/" + thn + "/" + sem);
@@ -58,7 +58,7 @@ public class MultipleRequest implements Runnable {
             for (Map.Entry<String, Object> mataKuliahEntry : dataMataKuliah.entrySet()) {
                 ScriptObjectMirror mataKuliah = (ScriptObjectMirror) mataKuliahEntry.getValue();
                 MataKuliah curr_mk = MataKuliahFactory.getInstance().createMataKuliah((String) mataKuliah.get("kode_mata_kuliah"), Integer.parseInt((String) mataKuliah.get("jumlah_sks")), (String) mataKuliah.get("nama_mata_kuliah"));
-                logged_mhs.getRiwayatNilai()
+                mahasiswa.getRiwayatNilai()
                         .add(new Mahasiswa.Nilai(tahunSemesterNilai, curr_mk, (String) mataKuliah.get("na")));
             }
         } catch (IOException e) {
