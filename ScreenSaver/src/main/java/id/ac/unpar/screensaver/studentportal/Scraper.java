@@ -64,7 +64,7 @@ public class Scraper {
         baseConn.execute();
     }
 
-    public String login(String npm, String pass) throws IOException {
+    public String login(String npm, String password) throws IOException {
         init();
         Mahasiswa logged_mhs = new Mahasiswa(npm);
         String user = logged_mhs.getEmailAddress();
@@ -80,7 +80,7 @@ public class Scraper {
         Connection loginConn = Jsoup.connect(SSO_URL + ";jsessionid=" + jsessionid + "?service=" + LOGIN_URL);
         loginConn.cookies(resp.cookies());
         loginConn.data("username", user);
-        loginConn.data("password", pass);
+        loginConn.data("password", password);
         loginConn.data("execution", execution);
         loginConn.data("_eventId", "submit");
         loginConn.timeout(0);
@@ -94,7 +94,7 @@ public class Scraper {
         }
     }
 
-    public TahunSemester requestNamePhotoTahunSemester(String phpsessid, Mahasiswa mhs) throws IOException {
+    public TahunSemester requestNamePhotoTahunSemester(String phpsessid, Mahasiswa mahasiswa) throws IOException {
         Connection connection = Jsoup.connect(HOME_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
@@ -102,10 +102,10 @@ public class Scraper {
         Response resp = connection.execute();
         Document doc = resp.parse();
         String nama = doc.select("div[class=namaUser d-none d-lg-block mr-3]").text();
-        mhs.setNama(nama.substring(0, nama.indexOf(mhs.getEmailAddress())));
+        mahasiswa.setNama(nama.substring(0, nama.indexOf(mahasiswa.getEmailAddress())));
         Element photo = doc.select("img[class=img-fluid fotoProfil]").first();
         String photoPath = photo.attr("src");
-        mhs.setPhotoPath(photoPath);
+        mahasiswa.setPhotoPath(photoPath);
         connection = Jsoup.connect(NILAI_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
@@ -119,7 +119,7 @@ public class Scraper {
         return currTahunSemester;
     }
 
-    public void requestNilai(String phpsessid, Mahasiswa logged_mhs) throws IOException, InterruptedException {
+    public void requestNilai(String phpsessid, Mahasiswa mahasiswa) throws IOException, InterruptedException {
         Connection connection = Jsoup.connect(NILAI_URL);
         connection.cookie("ci_session", phpsessid);
         connection.timeout(0);
@@ -135,13 +135,13 @@ public class Scraper {
 
         Thread[] threadUrl = new Thread[listSemester.size() - 1];
         for (int i = 0; i < listSemester.size() - 1; i++) {
-            threadUrl[i] = new Thread(new MultipleRequest(i, listSemester, NILAI_URL, phpsessid, logged_mhs));
+            threadUrl[i] = new Thread(new MultipleRequest(i, listSemester, NILAI_URL, phpsessid, mahasiswa));
             threadUrl[i].start();
         }
         for (int i = 0; i < listSemester.size() - 1; i++) {
             threadUrl[i].join();
         }
-        Collections.sort(logged_mhs.getRiwayatNilai(), new Comparator<Nilai>() {
+        Collections.sort(mahasiswa.getRiwayatNilai(), new Comparator<Nilai>() {
             @Override
             public int compare(Nilai o1, Nilai o2) {
                 if (o1.getTahunAjaran() < o2.getTahunAjaran()) {
