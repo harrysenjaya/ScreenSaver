@@ -27,7 +27,7 @@ public class MultipleRequest implements Runnable {
     ScriptEngineManager factory;
     ScriptEngine engine;
 
-    MultipleRequest(int index, ArrayList<String> listSemester, String NILAI_URL, String phpsessid, Mahasiswa mahasiswa) {
+    public MultipleRequest(int index, ArrayList<String> listSemester, String NILAI_URL, String phpsessid, Mahasiswa mahasiswa) {
         this.index = index;
         this.listSemester = listSemester;
         this.NILAI_URL = NILAI_URL;
