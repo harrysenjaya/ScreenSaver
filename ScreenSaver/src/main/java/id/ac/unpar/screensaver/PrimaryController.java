@@ -2,33 +2,42 @@ package id.ac.unpar.screensaver;
 
 import id.ac.unpar.screensaver.siakad.SIAkadDataPuller;
 import id.ac.unpar.siamodels.Mahasiswa;
-import id.ac.unpar.siamodels.TahunSemester;
+import java.io.ByteArrayInputStream;
+import javafx.scene.image.Image;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-public class PrimaryController implements Initializable{
-  
+public class PrimaryController implements Initializable {
+
     @FXML
     private Text nama, angkatan, usia, status, email, toefl, ipk, sks;
 
-    int i = 1;
+    @FXML
+    private ImageView foto;
 
-    private Mahasiswa mahasiswa;
-    
+    private int indexOfMahasiswa;
+
+    public int getIndexOfMahasiswa() {
+        return indexOfMahasiswa;
+    }
+
+    public void setIndexOfMahasiswa(int indexOfMahasiswa) {
+        this.indexOfMahasiswa = indexOfMahasiswa;
+    }
+
     public PrimaryController() throws IOException {
 
     }
@@ -38,58 +47,47 @@ public class PrimaryController implements Initializable{
         try {
             SIAkadDataPuller puller = new SIAkadDataPuller();
             Mahasiswa[] listMahasiswa = puller.pullMahasiswas();
-            mahasiswa = puller.pullMahasiswaDetail(listMahasiswa[0]);
-            this.nama.setText(mahasiswa.getNama());
-            this.angkatan.setText(mahasiswa.getTahunAngkatan()+"");
-            if (mahasiswa.getTanggalLahir() != null) {
-                this.usia.setText(Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getMonths()+ " bulan " + " (lahir " + mahasiswa.getTanggalLahir().toString()+ ")");
-            } else {
-                this.usia.setText("Tidak Tersedia");
-            }
+            puller.pullMahasiswaDetail(listMahasiswa[0]);
+            ByteArrayInputStream bais = new ByteArrayInputStream(listMahasiswa[0].getPhotoImage());
+            Image image = new Image(bais);
+            this.foto.setImage(image);
+            this.foto.fitWidthProperty();
+            this.foto.fitHeightProperty();
+            this.nama.setText(listMahasiswa[0].getNama());
+            this.angkatan.setText(listMahasiswa[0].getTahunAngkatan() + "");
+            this.usia.setText(Period.between(listMahasiswa[0].getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(listMahasiswa[0].getTanggalLahir(), LocalDate.now()).getMonths() + " bulan " + " (lahir " + listMahasiswa[0].getTanggalLahir().toString() + ")");
             this.status.setText("Tidak Tersedia");
-            this.email.setText(mahasiswa.getEmailAddress());
-            if (mahasiswa.getNilaiTOEFL() != null && !mahasiswa.getNilaiTOEFL().isEmpty()) {
-                this.toefl.setText(mahasiswa.getNilaiTOEFL().get(mahasiswa.getNilaiTOEFL().firstKey()).toString());
+            this.email.setText(listMahasiswa[0].getEmailAddress());
+            if (listMahasiswa[0].getNilaiTOEFL() != null && listMahasiswa[0].getNilaiTOEFL().size() > 0) {
+                this.toefl.setText(listMahasiswa[0].getNilaiTOEFL().get(listMahasiswa[0].getNilaiTOEFL().firstKey()).toString());
             } else {
                 this.toefl.setText("Tidak Tersedia");
             }
-            
-            this.ipk.setText(Math.round(mahasiswa.calculateIPS() * 100.0) / 100.0+"/"+Math.round(mahasiswa.calculateIPKumulatif() * 100.0) / 100.0);
-            this.sks.setText(+mahasiswa.calculateSKSLulus()+"/"+mahasiswa.calculateSKSTempuh(false));    
+            this.ipk.setText(Math.round(listMahasiswa[0].calculateIPS() * 100.0) / 100.0 + "/" + Math.round(listMahasiswa[0].calculateIPKumulatif() * 100.0) / 100.0);
+            this.sks.setText(+listMahasiswa[0].calculateSKSLulus() + "/" + listMahasiswa[0].calculateSKSTempuh(false));
             Timeline timeline = new Timeline(
                     new KeyFrame(
-                        Duration.seconds(10),
-                        event -> {
-                try {
-                    mahasiswa = puller.pullMahasiswaDetail(listMahasiswa[i]);
-                    this.nama.setText(mahasiswa.getNama());
-                    this.angkatan.setText(mahasiswa.getTahunAngkatan()+"");
-                    if (mahasiswa.getTanggalLahir() != null) {
-                        this.usia.setText(Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getMonths()+ " bulan " + " (lahir " + mahasiswa.getTanggalLahir().toString()+ ")");
-                    } else {
-                        this.usia.setText("Tidak Tersedia");
-                    }                    
-                    this.status.setText("Tidak Tersedia");
-                    this.email.setText(mahasiswa.getEmailAddress());
-                    if (mahasiswa.getNilaiTOEFL() != null && !mahasiswa.getNilaiTOEFL().isEmpty()) {
-                        this.toefl.setText(mahasiswa.getNilaiTOEFL().get(mahasiswa.getNilaiTOEFL().firstKey()).toString());
-                    } else {
-                        this.toefl.setText("Tidak Tersedia");
-                    }
-                    this.ipk.setText(Math.round(mahasiswa.calculateIPS() * 100.0) / 100.0+"/"+Math.round(mahasiswa.calculateIPKumulatif() * 100.0) / 100.0);
-                    this.sks.setText(+mahasiswa.calculateSKSLulus()+"/"+mahasiswa.calculateSKSTempuh(false));    
-                    i+=1;
-                    System.err.println("mahasiswa.getNama(): " + mahasiswa.getNama());
-                    System.err.println("mahasiswa.getPhotoPath(): " + mahasiswa.getPhotoPath());
-                    System.err.println("Arrays.toString(mahasiswa.getPhotoImage()" + Arrays.toString(mahasiswa.getPhotoImage()));
-                } catch (IOException ex) {
-                    Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                        } 
+                            Duration.seconds(10),
+                            event -> {
+                                if (this.getIndexOfMahasiswa() == listMahasiswa.length) {
+                                    this.setIndexOfMahasiswa(0);
+                                } else {
+                                    // listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail();
+                                    this.nama.setText(listMahasiswa[this.getIndexOfMahasiswa()].getNama());
+                                    this.angkatan.setText(listMahasiswa[this.getIndexOfMahasiswa()].getTahunAngkatan() + "");
+                                    this.usia.setText(Period.between(listMahasiswa[this.getIndexOfMahasiswa()].getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(listMahasiswa[1].getTanggalLahir(), LocalDate.now()).getMonths() + " bulan " + " (lahir " + listMahasiswa[1].getTanggalLahir().toString() + ")");
+                                    this.status.setText("Tidak Tersedia");
+                                    this.email.setText(listMahasiswa[this.getIndexOfMahasiswa()].getEmailAddress());
+                                    this.toefl.setText(listMahasiswa[this.getIndexOfMahasiswa()].getNilaiTOEFL().get(listMahasiswa[this.getIndexOfMahasiswa()].getNilaiTOEFL().firstKey()).toString());
+                                    this.ipk.setText(Math.round(listMahasiswa[this.getIndexOfMahasiswa()].calculateIPS() * 100.0) / 100.0 + "/" + Math.round(listMahasiswa[this.getIndexOfMahasiswa()].calculateIPKumulatif() * 100.0) / 100.0);
+                                    this.sks.setText(+listMahasiswa[this.getIndexOfMahasiswa()].calculateSKSLulus() + "/" + listMahasiswa[this.getIndexOfMahasiswa()].calculateSKSTempuh(false));
+                                    this.setIndexOfMahasiswa(this.getIndexOfMahasiswa() + 1);
+                                }
+                            }
                     )
-                );
-                timeline.setCycleCount(Animation.INDEFINITE);
-                timeline.play();
+            );
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.play();
 
         } catch (IOException ex) {
             Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
