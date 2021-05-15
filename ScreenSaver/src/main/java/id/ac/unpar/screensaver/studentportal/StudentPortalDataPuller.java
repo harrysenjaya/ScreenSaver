@@ -5,6 +5,7 @@
  */
 package id.ac.unpar.screensaver.studentportal;
 
+import id.ac.unpar.screensaver.DataPuller;
 import id.ac.unpar.screensaver.PrimaryController;
 import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.TahunSemester;
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author harry
  */
-public class StudentPortalDataPuller {
+public class StudentPortalDataPuller extends DataPuller {
 
     private Scraper scraper;
 
@@ -26,7 +27,7 @@ public class StudentPortalDataPuller {
 
     private Mahasiswa mahasiswa;
     private String session;
-    
+
     public StudentPortalDataPuller() {
         try {
             this.credentials.load(new FileReader("login.properties"));
@@ -41,12 +42,29 @@ public class StudentPortalDataPuller {
         }
     }
 
-    public Mahasiswa[] pullMahasiswas() throws IOException, IllegalStateException, InterruptedException {
-        return this.scraper.requestMahasiswaList(this.session, this.mahasiswa);
+    @Override
+    public Mahasiswa[] pullMahasiswas() {
+        Mahasiswa[] mahasiswas = null;
+        try {
+            mahasiswas = this.scraper.requestMahasiswaList(this.session, this.mahasiswa);
+        } catch (IllegalStateException ex) {
+            Logger.getLogger(StudentPortalDataPuller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(StudentPortalDataPuller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(StudentPortalDataPuller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return mahasiswas;
     }
-
-    public Mahasiswa pullMahasiswaDetail() throws IOException {
-        return this.scraper.requestMahasiswaDetail(this.session,this.mahasiswa);
+    
+    @Override
+    public Mahasiswa pullMahasiswaDetail(Mahasiswa m) {
+        try {
+            this.scraper.requestMahasiswaDetail(this.session, m);
+        } catch (IOException ex) {
+            Logger.getLogger(StudentPortalDataPuller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return m;
     }
 
 }

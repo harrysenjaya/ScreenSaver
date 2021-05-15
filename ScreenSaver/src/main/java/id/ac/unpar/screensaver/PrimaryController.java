@@ -49,7 +49,7 @@ public class PrimaryController implements Initializable {
             this.setIndexOfMahasiswa(1);
             StudentPortalDataPuller puller = new StudentPortalDataPuller();
             Mahasiswa[] listMahasiswa = puller.pullMahasiswas();
-            listMahasiswa[0] = puller.pullMahasiswaDetail();
+            listMahasiswa[0] = puller.pullMahasiswaDetail(listMahasiswa[0]);
             ByteArrayInputStream bais = new ByteArrayInputStream(listMahasiswa[0].getPhotoImage());
 			Image image = new Image(bais);
             this.foto.setImage(image);
