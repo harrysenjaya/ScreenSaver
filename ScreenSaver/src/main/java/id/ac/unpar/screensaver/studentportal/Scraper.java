@@ -229,7 +229,6 @@ public class Scraper {
         String currentLine = reader.readLine();
         reader.close();
 
-        System.out.println(currentLine);
         mahasiswa.setPhotoPath(currentLine);
 
         List<Mahasiswa> mahasiswaList;
