@@ -46,7 +46,7 @@ public class PrimaryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            StudentPortalDataPuller puller = new StudentPortalDataPuller();
+            DataPuller puller = new StudentPortalDataPuller();
             Mahasiswa[] listMahasiswa = puller.pullMahasiswas();
             listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail(listMahasiswa[this.getIndexOfMahasiswa()]);
             this.updateView(listMahasiswa[this.getIndexOfMahasiswa()]);
