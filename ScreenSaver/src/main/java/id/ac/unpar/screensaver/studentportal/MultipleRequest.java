@@ -1,4 +1,4 @@
-package id.ac.unpar.screensaver;
+package id.ac.unpar.screensaver.studentportal;
 
 import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.MataKuliah;
@@ -18,20 +18,21 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class MultipleRequest implements Runnable {
-    private int l;
+
+    private int index;
     private ArrayList<String> listSemester;
     private String NILAI_URL;
     private String phpsessid;
-    private Mahasiswa logged_mhs;
-    ScriptEngineManager factory;
-    ScriptEngine engine;
+    private Mahasiswa mahasiswa;
+    private ScriptEngineManager factory;
+    private ScriptEngine engine;
 
-    MultipleRequest(int l, ArrayList<String> listSemester, String NILAI_URL, String phpsessid, Mahasiswa logged_mhs){
-        this.l = l;
+    public MultipleRequest(int index, ArrayList<String> listSemester, String NILAI_URL, String phpsessid, Mahasiswa mahasiswa) {
+        this.index = index;
         this.listSemester = listSemester;
         this.NILAI_URL = NILAI_URL;
         this.phpsessid = phpsessid;
-        this.logged_mhs = logged_mhs;
+        this.mahasiswa = mahasiswa;
         factory = new ScriptEngineManager();
         engine = factory.getEngineByName("JavaScript");
     }
@@ -39,7 +40,7 @@ public class MultipleRequest implements Runnable {
     @Override
     public void run() {
         try {
-            String[] thn_sem = listSemester.get(l).split("-");
+            String[] thn_sem = listSemester.get(index).split("-");
             String thn = thn_sem[0];
             String sem = thn_sem[1];
             Connection connection = Jsoup.connect(NILAI_URL + "/" + thn + "/" + sem);
@@ -57,17 +58,13 @@ public class MultipleRequest implements Runnable {
             for (Map.Entry<String, Object> mataKuliahEntry : dataMataKuliah.entrySet()) {
                 ScriptObjectMirror mataKuliah = (ScriptObjectMirror) mataKuliahEntry.getValue();
                 MataKuliah curr_mk = MataKuliahFactory.getInstance().createMataKuliah((String) mataKuliah.get("kode_mata_kuliah"), Integer.parseInt((String) mataKuliah.get("jumlah_sks")), (String) mataKuliah.get("nama_mata_kuliah"));
-                logged_mhs.getRiwayatNilai().add(new Mahasiswa.Nilai(tahunSemesterNilai, curr_mk, (String) mataKuliah.get("na")));
+                mahasiswa.getRiwayatNilai()
+                        .add(new Mahasiswa.Nilai(tahunSemesterNilai, curr_mk, (String) mataKuliah.get("na")));
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
-        } catch (ScriptException se){
+        } catch (ScriptException se) {
             se.printStackTrace();
         }
     }
 }
-
-
-
-
-

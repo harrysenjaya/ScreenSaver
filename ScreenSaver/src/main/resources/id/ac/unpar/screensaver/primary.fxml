@@ -1,76 +1,208 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="id.ac.unpar.screensaver.PrimaryController">
+
+<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="id.ac.unpar.screensaver.PrimaryController">
    <children>
-      <ImageView fx:id="foto" layoutX="15.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true" />
-      <Text fx:id="nama" layoutX="214.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
-         <font>
-            <Font size="25.0" />
-         </font></Text>
-      <Text fx:id="angkatan" layoutX="214.0" layoutY="127.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mahasiswa angkatan ">
-         <font>
-            <Font size="20.0" />
-         </font></Text>
-      <Text layoutX="214.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Usia" wrappingWidth="67.0">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text fx:id="usia" layoutX="400.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text layoutX="214.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status" wrappingWidth="67.0">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text fx:id="status" layoutX="400.0" layoutY="220.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text layoutX="214.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" wrappingWidth="67.0">
-         <font>
-            <Font size="20.0" />
-         </font></Text>
-      <Text fx:id="email" layoutX="400.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-         <font>
-            <Font size="20.0" />
-         </font></Text>
-      <Text layoutX="214.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nilai TOEFL" wrappingWidth="110.0">
-         <font>
-            <Font size="20.0" />
-         </font></Text>
-      <Text fx:id="toefl" layoutX="400.0" layoutY="300.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-         <font>
-            <Font size="20.0" />
-         </font></Text>
-      <Text layoutX="218.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IPS/IPK" wrappingWidth="110.0">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text fx:id="ipk" layoutX="400.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text layoutX="218.0" layoutY="380.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SKS Lulus/Tempuh" wrappingWidth="167.0">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text fx:id="sks" layoutX="400.0" layoutY="380.0" strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
+      <ImageView fx:id="foto" fitHeight="750.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_LEFT">
+         <StackPane.margin>
+            <Insets left="50.0" right="50.0" />
+         </StackPane.margin>
+      </ImageView>
+      <VBox StackPane.alignment="CENTER">
+         <children>
+            <Text fx:id="nama" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font size="70.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="50.0" top="50.0" />
+               </VBox.margin>
+            </Text>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mahasiswa angkatan ">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="angkatan" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Usia">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Text>
+                  <Text fx:id="usia" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Text>
+                  <Text fx:id="status" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Text>
+                  <Text fx:id="email" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nilai TOEFL">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Text>
+                  <Text fx:id="toefl" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="IPS/IPK">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Text>
+                  <Text fx:id="ipk" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SKS Lulus/Tempuh">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Text>
+                  <Text fx:id="sks" strokeType="OUTSIDE" strokeWidth="0.0">
+                     <font>
+                        <Font size="45.0" />
+                     </font>
+                  </Text>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="650.0" />
+         </padding>
+         <StackPane.margin>
+            <Insets left="50.0" right="50.0" />
+         </StackPane.margin>
+      </VBox>
    </children>
-</Pane>
+</StackPane>
