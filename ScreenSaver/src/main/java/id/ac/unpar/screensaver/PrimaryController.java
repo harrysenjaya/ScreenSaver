@@ -53,7 +53,7 @@ public class PrimaryController implements Initializable {
             this.setIndexOfMahasiswa(this.getIndexOfMahasiswa() + 1);
             Timeline timeline = new Timeline(
                     new KeyFrame(
-                            Duration.seconds(5),
+                            Duration.seconds(1),
                             event -> {
                                 if (this.getIndexOfMahasiswa() == listMahasiswa.length) {
                                     this.setIndexOfMahasiswa(0);

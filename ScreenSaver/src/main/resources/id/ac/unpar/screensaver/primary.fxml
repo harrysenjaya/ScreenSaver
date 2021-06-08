@@ -8,19 +8,18 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="id.ac.unpar.screensaver.PrimaryController">
    <children>
-      <ImageView fx:id="foto" fitHeight="750.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_LEFT">
+      <ImageView fx:id="foto" fitWidth="500.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_LEFT">
          <StackPane.margin>
             <Insets left="50.0" right="50.0" />
          </StackPane.margin>
       </ImageView>
-      <VBox StackPane.alignment="CENTER">
+      <VBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" StackPane.alignment="CENTER">
          <children>
-            <Text fx:id="nama" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" VBox.vgrow="ALWAYS">
+            <Text fx:id="nama" strokeType="OUTSIDE" strokeWidth="0.0" VBox.vgrow="ALWAYS">
                <font>
-                  <Font size="70.0" />
+                  <Font size="55.0" />
                </font>
                <VBox.margin>
                   <Insets bottom="50.0" top="50.0" />
@@ -30,12 +29,12 @@
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mahasiswa angkatan ">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
                   </Text>
                   <Text fx:id="angkatan" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
                   </Text>
                </children>
@@ -45,22 +44,14 @@
             </HBox>
             <HBox>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Usia">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Usia: ">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-                     <font>
-                        <Font size="45.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
                   </Text>
                   <Text fx:id="usia" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
                      <HBox.margin>
                         <Insets />
@@ -73,22 +64,14 @@
             </HBox>
             <HBox>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status: ">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-                     <font>
-                        <Font size="45.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
                   </Text>
                   <Text fx:id="status" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
                   </Text>
                </children>
@@ -98,22 +81,14 @@
             </HBox>
             <HBox>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email: ">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-                     <font>
-                        <Font size="45.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
                   </Text>
                   <Text fx:id="email" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
                   </Text>
                </children>
@@ -123,22 +98,14 @@
             </HBox>
             <HBox>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nilai TOEFL">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nilai TOEFL: ">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-                     <font>
-                        <Font size="45.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
                   </Text>
                   <Text fx:id="toefl" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
                   </Text>
                </children>
@@ -148,22 +115,14 @@
             </HBox>
             <HBox>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="IPS/IPK">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="IPS/IPK: ">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-                     <font>
-                        <Font size="45.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
                   </Text>
                   <Text fx:id="ipk" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
                   </Text>
                </children>
@@ -173,22 +132,14 @@
             </HBox>
             <HBox>
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SKS Lulus/Tempuh">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SKS Lulus/Tempuh: ">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=": ">
-                     <font>
-                        <Font size="45.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
                   </Text>
                   <Text fx:id="sks" strokeType="OUTSIDE" strokeWidth="0.0">
                      <font>
-                        <Font size="45.0" />
+                        <Font size="40.0" />
                      </font>
                   </Text>
                </children>
@@ -197,11 +148,8 @@
                </VBox.margin>
             </HBox>
          </children>
-         <padding>
-            <Insets left="650.0" />
-         </padding>
          <StackPane.margin>
-            <Insets left="50.0" right="50.0" />
+            <Insets left="600.0" right="50.0" />
          </StackPane.margin>
       </VBox>
    </children>
