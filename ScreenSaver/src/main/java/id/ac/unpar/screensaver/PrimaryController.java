@@ -1,7 +1,6 @@
 package id.ac.unpar.screensaver;
 
-import id.ac.unpar.screensaver.studentportal.Scraper;
-import id.ac.unpar.screensaver.studentportal.StudentPortalDataPuller;
+import id.ac.unpar.screensaver.siakad.SIAkadDataPuller;
 import id.ac.unpar.siamodels.Mahasiswa;
 import java.io.ByteArrayInputStream;
 import javafx.scene.image.Image;
@@ -46,7 +45,7 @@ public class PrimaryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            DataPuller puller = new StudentPortalDataPuller();
+            DataPuller puller = new SIAkadDataPuller();
             Mahasiswa[] listMahasiswa = puller.pullMahasiswas();
             listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail(listMahasiswa[this.getIndexOfMahasiswa()]);
             this.updateView(listMahasiswa[this.getIndexOfMahasiswa()]);

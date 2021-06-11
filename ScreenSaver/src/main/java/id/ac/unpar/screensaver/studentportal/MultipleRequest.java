@@ -4,7 +4,7 @@ import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.MataKuliah;
 import id.ac.unpar.siamodels.MataKuliahFactory;
 import id.ac.unpar.siamodels.TahunSemester;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
+// import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -53,14 +53,14 @@ public class MultipleRequest implements Runnable {
             Element script = doc.select("script").get(doc.select("script").size()-1);
             String scriptDataMataKuliah = script.html().substring(script.html().indexOf("var data_mata_kuliah = [];"), script.html().indexOf("var data_angket = [];"));
             engine.eval(scriptDataMataKuliah);
-            ScriptObjectMirror dataMataKuliah = (ScriptObjectMirror) engine.get("data_mata_kuliah");
+            // ScriptObjectMirror dataMataKuliah = (ScriptObjectMirror) engine.get("data_mata_kuliah");
             TahunSemester tahunSemesterNilai = new TahunSemester(Integer.parseInt(thn), sem.charAt(0));
-            for (Map.Entry<String, Object> mataKuliahEntry : dataMataKuliah.entrySet()) {
-                ScriptObjectMirror mataKuliah = (ScriptObjectMirror) mataKuliahEntry.getValue();
-                MataKuliah curr_mk = MataKuliahFactory.getInstance().createMataKuliah((String) mataKuliah.get("kode_mata_kuliah"), Integer.parseInt((String) mataKuliah.get("jumlah_sks")), (String) mataKuliah.get("nama_mata_kuliah"));
-                mahasiswa.getRiwayatNilai()
-                        .add(new Mahasiswa.Nilai(tahunSemesterNilai, curr_mk, (String) mataKuliah.get("na")));
-            }
+            // for (Map.Entry<String, Object> mataKuliahEntry : dataMataKuliah.entrySet()) {
+            //     ScriptObjectMirror mataKuliah = (ScriptObjectMirror) mataKuliahEntry.getValue();
+            //     MataKuliah curr_mk = MataKuliahFactory.getInstance().createMataKuliah((String) mataKuliah.get("kode_mata_kuliah"), Integer.parseInt((String) mataKuliah.get("jumlah_sks")), (String) mataKuliah.get("nama_mata_kuliah"));
+            //     mahasiswa.getRiwayatNilai()
+            //             .add(new Mahasiswa.Nilai(tahunSemesterNilai, curr_mk, (String) mataKuliah.get("na")));
+            // }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ScriptException se) {
