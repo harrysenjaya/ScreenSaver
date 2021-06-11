@@ -1,7 +1,9 @@
 package id.ac.unpar.screensaver;
 
 import id.ac.unpar.screensaver.siakad.SIAkadDataPuller;
+//import id.ac.unpar.screensaver.studentportal.StudentPortalDataPuller;
 import id.ac.unpar.siamodels.Mahasiswa;
+import id.ac.unpar.siamodels.TahunSemester;
 import java.io.ByteArrayInputStream;
 import javafx.scene.image.Image;
 import java.io.IOException;
@@ -79,6 +81,7 @@ public class PrimaryController implements Initializable {
     }
 
     public void updateView(Mahasiswa mahasiswa) throws IOException {
+        System.out.println("Updating view with " + mahasiswa.getNama());
         if (mahasiswa.getPhotoPath() != null) {
             ByteArrayInputStream bais = new ByteArrayInputStream(mahasiswa.getPhotoImage());
             Image image = new Image(bais);
@@ -98,7 +101,13 @@ public class PrimaryController implements Initializable {
         } else {
             this.toefl.setText("Tidak Tersedia");
         }
-        this.ipk.setText(Math.round(mahasiswa.calculateIPS() * 100.0) / 100.0 + "/" + Math.round(mahasiswa.calculateIPKumulatif() * 100.0) / 100.0);
+        TahunSemester tahunSemesterTerakhir = null;
+        for (Mahasiswa.Nilai nilai : mahasiswa.getRiwayatNilai()) {
+            if (tahunSemesterTerakhir == null || nilai.getTahunSemester().compareTo(tahunSemesterTerakhir) > 0) {
+                tahunSemesterTerakhir = nilai.getTahunSemester();
+            }
+        }
+        this.ipk.setText(Math.round(mahasiswa.calculateIPS(tahunSemesterTerakhir) * 100.0) / 100.0 + "/" + Math.round(mahasiswa.calculateIPK() * 100.0) / 100.0);
         this.sks.setText(+mahasiswa.calculateSKSLulus() + "/" + mahasiswa.calculateSKSTempuh(false));
     }
 }
