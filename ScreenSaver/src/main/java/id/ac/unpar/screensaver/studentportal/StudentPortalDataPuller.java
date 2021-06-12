@@ -36,7 +36,6 @@ public class StudentPortalDataPuller extends DataPuller {
             this.mahasiswa = new Mahasiswa(npm);
             this.scraper = new Scraper();
             this.session = this.scraper.login(npm, password);
-
         } catch (IOException ex) {
             Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
         }
