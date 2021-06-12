@@ -1,7 +1,7 @@
 package id.ac.unpar.screensaver;
 
-import id.ac.unpar.screensaver.siakad.SIAkadDataPuller;
-//import id.ac.unpar.screensaver.studentportal.StudentPortalDataPuller;
+//import id.ac.unpar.screensaver.siakad.SIAkadDataPuller;
+import id.ac.unpar.screensaver.studentportal.StudentPortalDataPuller;
 import id.ac.unpar.siamodels.Mahasiswa;
 import id.ac.unpar.siamodels.TahunSemester;
 import java.io.ByteArrayInputStream;
@@ -31,6 +31,8 @@ public class PrimaryController implements Initializable {
     private ImageView foto;
 
     private int indexOfMahasiswa = 0;
+    private Mahasiswa[] listMahasiswa;
+    private DataPuller puller;
 
     public int getIndexOfMahasiswa() {
         return indexOfMahasiswa;
@@ -47,37 +49,68 @@ public class PrimaryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            DataPuller puller = new SIAkadDataPuller();
-            Mahasiswa[] listMahasiswa = puller.pullMahasiswas();
-            listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail(listMahasiswa[this.getIndexOfMahasiswa()]);
-            this.updateView(listMahasiswa[this.getIndexOfMahasiswa()]);
-            this.setIndexOfMahasiswa(this.getIndexOfMahasiswa() + 1);
-            Timeline timeline = new Timeline(
-                    new KeyFrame(
-                            Duration.seconds(1),
-                            event -> {
+            puller = new StudentPortalDataPuller();
+            listMahasiswa = puller.pullMahasiswas();
+        } catch (IllegalStateException ex) {
+            Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (listMahasiswa != null) {
+            try {
+                listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail(listMahasiswa[this.getIndexOfMahasiswa()]);
+                this.updateView(listMahasiswa[this.getIndexOfMahasiswa()]);
+                this.setIndexOfMahasiswa(this.getIndexOfMahasiswa() + 1);
+            } catch (IOException ex) {
+                Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            updateView();
+        }
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.seconds(5),
+                        event -> {
+                            if (listMahasiswa == null) {
+                                updateView();
+                                try {
+                                    puller = new StudentPortalDataPuller();
+                                    listMahasiswa = puller.pullMahasiswas();
+                                } catch (IllegalStateException ex) {
+                                    Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            } else {
                                 if (this.getIndexOfMahasiswa() == listMahasiswa.length) {
                                     this.setIndexOfMahasiswa(0);
                                 } else {
                                     try {
-                                        listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail(listMahasiswa[this.getIndexOfMahasiswa()]);
+                                        if (listMahasiswa[this.getIndexOfMahasiswa()].getTanggalLahir() == null) {
+                                            listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail(listMahasiswa[this.getIndexOfMahasiswa()]);
+                                        }
                                         this.updateView(listMahasiswa[this.getIndexOfMahasiswa()]);
                                         this.setIndexOfMahasiswa(this.getIndexOfMahasiswa() + 1);
                                     } catch (IOException ex) {
                                         Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+                                        updateView();
                                     }
                                 }
                             }
-                    )
-            );
-            timeline.setCycleCount(Animation.INDEFINITE);
-            timeline.play();
+                        }
+                )
+        );
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
 
-        } catch (IllegalStateException ex) {
-            Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    }
+
+    public void updateView() {
+        this.foto.setVisible(false);
+        this.nama.setText("Pastikan koneksi internet berfungsi dengan normal!");
+        this.angkatan.setText("-");
+        this.usia.setText("-");
+        this.status.setText("-");
+        this.email.setText("-");
+        this.toefl.setText("-");
+        this.ipk.setText("-");
+        this.sks.setText("-");
     }
 
     public void updateView(Mahasiswa mahasiswa) throws IOException {
