@@ -130,7 +130,12 @@ public class PrimaryController implements Initializable {
         this.nama.setText(mahasiswa.getNama());
         this.angkatan.setText(mahasiswa.getTahunAngkatan() + "");
         this.usia.setText(Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getYears() + " tahun " + Period.between(mahasiswa.getTanggalLahir(), LocalDate.now()).getMonths() + " bulan " + " (lahir " + mahasiswa.getTanggalLahir().toString() + ")");
-        this.status.setText("Tidak Tersedia");
+        if (mahasiswa.getStatus()!=null) {
+            this.status.setText(mahasiswa.getStatus().toString());
+        }
+        else{
+            this.status.setText("Tidak Tersedia");
+        }
         this.email.setText(mahasiswa.getEmailAddress());
         if (mahasiswa.getNilaiTOEFL() != null && mahasiswa.getNilaiTOEFL().size() > 0) {
             this.toefl.setText(mahasiswa.getNilaiTOEFL().get(mahasiswa.getNilaiTOEFL().firstKey()).toString());
