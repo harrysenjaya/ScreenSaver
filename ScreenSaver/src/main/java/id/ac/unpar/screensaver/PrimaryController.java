@@ -81,15 +81,18 @@ public class PrimaryController implements Initializable {
                                 if (this.getIndexOfMahasiswa() == listMahasiswa.length) {
                                     this.setIndexOfMahasiswa(0);
                                 } else {
+                                    if (listMahasiswa[this.getIndexOfMahasiswa()].getTanggalLahir() == null) {
+                                        listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail(listMahasiswa[this.getIndexOfMahasiswa()]);
+                                    }
+                                }
+                                if (listMahasiswa[this.getIndexOfMahasiswa()].getTanggalLahir() == null) {
+                                    updateView();
+                                } else {
                                     try {
-                                        if (listMahasiswa[this.getIndexOfMahasiswa()].getTanggalLahir() == null) {
-                                            listMahasiswa[this.getIndexOfMahasiswa()] = puller.pullMahasiswaDetail(listMahasiswa[this.getIndexOfMahasiswa()]);
-                                        }
                                         this.updateView(listMahasiswa[this.getIndexOfMahasiswa()]);
                                         this.setIndexOfMahasiswa(this.getIndexOfMahasiswa() + 1);
                                     } catch (IOException ex) {
                                         Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
-                                        updateView();
                                     }
                                 }
                             }
