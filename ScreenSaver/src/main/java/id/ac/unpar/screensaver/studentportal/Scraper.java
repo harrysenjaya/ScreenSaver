@@ -32,10 +32,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-/**
- *
- * @author harry
- */
 public class Scraper {
 
     public static final String BASE_URL = "https://studentportal.unpar.ac.id/";
